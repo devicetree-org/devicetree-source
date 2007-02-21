@@ -1,7 +1,7 @@
 /*
- * Device Tree Souce for Buffalo KuroboxHG
+ * Device Tree Souce for Buffalo KuroboxHD
  *
- * Choose CONFIG_LINKSTATION to build a kernel for KuroboxHG, or use
+ * Choose CONFIG_LINKSTATION to build a kernel for KuroboxHD, or use
  * the default configuration linkstation_defconfig.
  *
  * Based on sandpoint.dts
@@ -15,14 +15,14 @@
 
 XXXX add flash parts, rtc, ??
 
-build with: "dtc -f -I dts -O dtb -o kuroboxHG.dtb -V 16 kuroboxHG.dts"
+build with: "dtc -f -I dts -O dtb -o kuroboxHD.dtb -V 16 kuroboxHD.dts"
 
 
  */
 
 / {
 	linux,phandle = <1000>;
-	model = "KuroboxHG";
+	model = "KuroboxHD";
 	compatible = "linkstation";
 	#address-cells = <1>;
 	#size-cells = <1>;
@@ -37,8 +37,8 @@ build with: "dtc -f -I dts -O dtb -o kuroboxHG.dtb -V 16 kuroboxHG.dts"
 			linux,phandle = <2100>;
 			device_type = "cpu";
 			reg = <0>;
-			clock-frequency = <fdad680>;	/* Fixed by bootwrapper */
-			timebase-frequency = <1F04000>; /* Fixed by bootwrapper */
+			clock-frequency = <bebc200>;	/* Fixed by bootwrapper */
+			timebase-frequency = <1743000>; /* Fixed by bootwrapper */
 			bus-frequency = <0>;		/* From bootloader */
 			/* Following required by dtc but not used */
 			i-cache-line-size = <0>;
@@ -51,7 +51,7 @@ build with: "dtc -f -I dts -O dtb -o kuroboxHG.dtb -V 16 kuroboxHG.dts"
 	memory {
 		linux,phandle = <3000>;
 		device_type = "memory";
-		reg = <00000000 08000000>;
+		reg = <00000000 04000000>;
 	};
 
 	soc10x { /* AFAICT need to make soc for 8245's uarts to be defined */
@@ -83,7 +83,7 @@ build with: "dtc -f -I dts -O dtb -o kuroboxHG.dtb -V 16 kuroboxHG.dts"
 			device_type = "serial";
 			compatible = "ns16550";
 			reg = <80004500 8>;
-			clock-frequency = <7c044a8>;
+			clock-frequency = <5d08d88>;
 			current-speed = <2580>;
 			interrupts = <9 2>;
 			interrupt-parent = <4400>;
@@ -94,7 +94,7 @@ build with: "dtc -f -I dts -O dtb -o kuroboxHG.dtb -V 16 kuroboxHG.dts"
 			device_type = "serial";
 			compatible = "ns16550";
 			reg = <80004600 8>;
-			clock-frequency = <7c044a8>;
+			clock-frequency = <5d08d88>;
 			current-speed = <e100>;
 			interrupts = <a 0>;
 			interrupt-parent = <4400>;
