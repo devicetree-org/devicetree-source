@@ -1,5 +1,5 @@
 /*
- * MPC885 ADS Device Tree Source
+ * EP88xC Device Tree Source
  *
  * Copyright 2006 MontaVista Software, Inc.
  * Copyright 2007 Freescale Semiconductor, Inc.
@@ -12,8 +12,8 @@
 
 
 / {
-	model = "MPC885ADS";
-	compatible = "fsl,mpc885ads";
+	model = "EP88xC";
+	compatible = "fsl,ep88xc";
 	#address-cells = <1>;
 	#size-cells = <1>;
 
@@ -41,41 +41,40 @@
 		reg = <0 0>;
 	};
 
-	localbus@ff000100 {
+	localbus@fa200100 {
 		compatible = "fsl,mpc885-localbus", "fsl,pq1-localbus";
 		#address-cells = <2>;
 		#size-cells = <1>;
-		reg = <ff000100 40>;
+		reg = <fa200100 40>;
 
 		ranges = <
-			0 0 fe000000 00800000
-			1 0 ff080000 00008000
-			5 0 ff0a0000 00008000
+			0 0 fc000000 04000000
+			3 0 fa000000 01000000
 		>;
 
-		flash@0,0 {
-			compatible = "jedec-flash";
-			reg = <0 0 800000>;
+		flash@0,2000000 {
+			compatible = "cfi-flash";
+			reg = <0 2000000 2000000>;
 			bank-width = <4>;
-			device-width = <1>;
+			device-width = <2>;
 		};
 
-		board-control@1,0 {
-			reg = <1 0 20 5 300 4>;
-			compatible = "fsl,mpc885ads-bcsr";
+		board-control@3,400000 {
+			reg = <3 400000 10>;
+			compatible = "fsl,ep88xc-bcsr";
 		};
 	};
 
-	soc@ff000000 {
+	soc@fa200000 {
 		compatible = "fsl,mpc885", "fsl,pq1-soc";
 		#address-cells = <1>;
 		#size-cells = <1>;
 		device_type = "soc";
-		ranges = <0 ff000000 00004000>;
+		ranges = <0 fa200000 00004000>;
 		bus-frequency = <0>;
 
 		// Temporary -- will go away once kernel uses ranges for get_immrbase().
-		reg = <ff000000 4000>;
+		reg = <fa200000 4000>;
 
 		mdio@e00 {
 			compatible = "fsl,mpc885-fec-mdio", "fsl,pq1-fec-mdio";
@@ -90,11 +89,6 @@
 
 			PHY1: ethernet-phy@1 {
 				reg = <1>;
-				device_type = "ethernet-phy";
-			};
-
-			PHY2: ethernet-phy@2 {
-				reg = <2>;
 				device_type = "ethernet-phy";
 			};
 		};
@@ -179,6 +173,7 @@
 				             "fsl,cpm1-pic";
 			};
 
+			// MON-1
 			serial@a80 {
 				device_type = "serial";
 				compatible = "fsl,mpc885-smc-uart",
@@ -188,35 +183,32 @@
 				interrupt-parent = <&CPM_PIC>;
 				fsl,cpm-brg = <1>;
 				fsl,cpm-command = <0090>;
+				linux,planetcore-label = "SMC1";
 			};
 
-			serial@a90 {
+			// SER-1
+			serial@a20 {
 				device_type = "serial";
-				compatible = "fsl,mpc885-smc-uart",
-				             "fsl,cpm1-smc-uart";
-				reg = <a90 10 3f80 40>;
-				interrupts = <3>;
+				compatible = "fsl,mpc885-scc-uart",
+				             "fsl,cpm1-scc-uart";
+				reg = <a20 20 3d00 80>;
+				interrupts = <1d>;
 				interrupt-parent = <&CPM_PIC>;
 				fsl,cpm-brg = <2>;
-				fsl,cpm-command = <00d0>;
+				fsl,cpm-command = <0040>;
+				linux,planetcore-label = "SCC2";
 			};
 
-			ethernet@a40 {
-				device_type = "network";
-				compatible = "fsl,mpc885-scc-enet",
-				             "fsl,cpm1-scc-enet";
-				reg = <a40 18 3e00 100>;
-				local-mac-address = [ 00 00 00 00 00 00 ];
-				interrupts = <1c>;
+			usb@a00 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				compatible = "fsl,mpc885-usb",
+				             "fsl,cpm1-usb";
+				reg = <a00 18 1c00 80>;
 				interrupt-parent = <&CPM_PIC>;
-				phy-handle = <&PHY2>;
-				fsl,cpm-command = <0080>;
-				linux,network-index = <2>;
+				interrupts = <1e>;
+				fsl,cpm-command = <0000>;
 			};
 		};
-	};
-
-	chosen {
-		linux,stdout-path = "/soc/cpm/serial@a80";
 	};
 };

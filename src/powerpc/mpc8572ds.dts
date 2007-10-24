@@ -1,7 +1,7 @@
 /*
- * MPC8641 HPCN Device Tree Source
+ * MPC8572 DS Device Tree Source
  *
- * Copyright 2006 Freescale Semiconductor Inc.
+ * Copyright 2007 Freescale Semiconductor Inc.
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -9,10 +9,9 @@
  * option) any later version.
  */
 
-
 / {
-	model = "MPC8641HPCN";
-	compatible = "mpc86xx";
+	model = "fsl,MPC8572DS";
+	compatible = "fsl,MPC8572DS";
 	#address-cells = <1>;
 	#size-cells = <1>;
 
@@ -20,42 +19,54 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 
-		PowerPC,8641@0 {
+		PowerPC,8572@0 {
 			device_type = "cpu";
 			reg = <0>;
 			d-cache-line-size = <20>;	// 32 bytes
 			i-cache-line-size = <20>;	// 32 bytes
 			d-cache-size = <8000>;		// L1, 32K
 			i-cache-size = <8000>;		// L1, 32K
-			timebase-frequency = <0>;	// 33 MHz, from uboot
-			bus-frequency = <0>;		// From uboot
-			clock-frequency = <0>;		// From uboot
-		};
-		PowerPC,8641@1 {
-			device_type = "cpu";
-			reg = <1>;
-			d-cache-line-size = <20>;	// 32 bytes
-			i-cache-line-size = <20>;	// 32 bytes
-			d-cache-size = <8000>;		// L1, 32K
-			i-cache-size = <8000>;		// L1, 32K
-			timebase-frequency = <0>;	// 33 MHz, from uboot
-			bus-frequency = <0>;		// From uboot
-			clock-frequency = <0>;		// From uboot
+			timebase-frequency = <0>;
+			bus-frequency = <0>;
+			clock-frequency = <0>;
 		};
 	};
 
 	memory {
 		device_type = "memory";
-		reg = <00000000 40000000>;	// 1G at 0x0
+		reg = <00000000 00000000>;	// Filled by U-Boot
 	};
 
-	soc8641@f8000000 {
+	soc8572@ffe00000 {
 		#address-cells = <1>;
 		#size-cells = <1>;
 		device_type = "soc";
-		ranges = <00000000 f8000000 00100000>;
-		reg = <f8000000 00001000>;	// CCSRBAR
-		bus-frequency = <0>;
+		ranges = <00000000 ffe00000 00100000>;
+		reg = <ffe00000 00001000>;	// CCSRBAR & soc regs, remove once parse code for immrbase fixed
+		bus-frequency = <0>;		// Filled out by uboot.
+
+		memory-controller@2000 {
+			compatible = "fsl,mpc8572-memory-controller";
+			reg = <2000 1000>;
+			interrupt-parent = <&mpic>;
+			interrupts = <12 2>;
+		};
+
+		memory-controller@6000 {
+			compatible = "fsl,mpc8572-memory-controller";
+			reg = <6000 1000>;
+			interrupt-parent = <&mpic>;
+			interrupts = <12 2>;
+		};
+
+		l2-cache-controller@20000 {
+			compatible = "fsl,mpc8572-l2-cache-controller";
+			reg = <20000 1000>;
+			cache-line-size = <20>;	// 32 bytes
+			cache-size = <80000>;	// L2, 512K
+			interrupt-parent = <&mpic>;
+			interrupts = <10 2>;
+		};
 
 		i2c@3000 {
 			device_type = "i2c";
@@ -85,25 +96,21 @@
 				interrupt-parent = <&mpic>;
 				interrupts = <a 1>;
 				reg = <0>;
-				device_type = "ethernet-phy";
 			};
 			phy1: ethernet-phy@1 {
 				interrupt-parent = <&mpic>;
 				interrupts = <a 1>;
 				reg = <1>;
-				device_type = "ethernet-phy";
 			};
 			phy2: ethernet-phy@2 {
 				interrupt-parent = <&mpic>;
 				interrupts = <a 1>;
 				reg = <2>;
-				device_type = "ethernet-phy";
 			};
 			phy3: ethernet-phy@3 {
 				interrupt-parent = <&mpic>;
 				interrupts = <a 1>;
 				reg = <3>;
-				device_type = "ethernet-phy";
 			};
 		};
 
@@ -111,15 +118,9 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			device_type = "network";
-			model = "TSEC";
+			model = "eTSEC";
 			compatible = "gianfar";
 			reg = <24000 1000>;
-			/*
-			 * mac-address is deprecated and will be removed
-			 * in 2.6.25.  Only recent versions of
-			 * U-Boot support local-mac-address, however.
-			 */
-			mac-address = [ 00 00 00 00 00 00 ];
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			interrupts = <1d 2 1e 2 22 2>;
 			interrupt-parent = <&mpic>;
@@ -131,37 +132,25 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			device_type = "network";
-			model = "TSEC";
+			model = "eTSEC";
 			compatible = "gianfar";
 			reg = <25000 1000>;
-			/*
-			 * mac-address is deprecated and will be removed
-			 * in 2.6.25.  Only recent versions of
-			 * U-Boot support local-mac-address, however.
-			 */
-			mac-address = [ 00 00 00 00 00 00 ];
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			interrupts = <23 2 24 2 28 2>;
 			interrupt-parent = <&mpic>;
 			phy-handle = <&phy1>;
 			phy-connection-type = "rgmii-id";
 		};
-		
+
 		ethernet@26000 {
 			#address-cells = <1>;
 			#size-cells = <0>;
 			device_type = "network";
-			model = "TSEC";
+			model = "eTSEC";
 			compatible = "gianfar";
 			reg = <26000 1000>;
-			/*
-			 * mac-address is deprecated and will be removed
-			 * in 2.6.25.  Only recent versions of
-			 * U-Boot support local-mac-address, however.
-			 */
-			mac-address = [ 00 00 00 00 00 00 ];
 			local-mac-address = [ 00 00 00 00 00 00 ];
-			interrupts = <1F 2 20 2 21 2>;
+			interrupts = <1f 2 20 2 21 2>;
 			interrupt-parent = <&mpic>;
 			phy-handle = <&phy2>;
 			phy-connection-type = "rgmii-id";
@@ -171,21 +160,16 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			device_type = "network";
-			model = "TSEC";
+			model = "eTSEC";
 			compatible = "gianfar";
 			reg = <27000 1000>;
-			/*
-			 * mac-address is deprecated and will be removed
-			 * in 2.6.25.  Only recent versions of
-			 * U-Boot support local-mac-address, however.
-			 */
-			mac-address = [ 00 00 00 00 00 00 ];
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			interrupts = <25 2 26 2 27 2>;
 			interrupt-parent = <&mpic>;
 			phy-handle = <&phy3>;
 			phy-connection-type = "rgmii-id";
 		};
+
 		serial@4500 {
 			device_type = "serial";
 			compatible = "ns16550";
@@ -200,8 +184,14 @@
 			compatible = "ns16550";
 			reg = <4600 100>;
 			clock-frequency = <0>;
-			interrupts = <1c 2>;
+			interrupts = <2a 2>;
 			interrupt-parent = <&mpic>;
+		};
+
+		global-utilities@e0000 {	//global utilities block
+			compatible = "fsl,mpc8572-guts";
+			reg = <e0000 1000>;
+			fsl,has-rstcr;
 		};
 
 		mpic: pic@40000 {
@@ -214,40 +204,34 @@
 			device_type = "open-pic";
 			big-endian;
 		};
-
-		global-utilities@e0000 {
-			compatible = "fsl,mpc8641-guts";
-			reg = <e0000 1000>;
-			fsl,has-rstcr;
-		};
 	};
 
-	pcie@f8008000 {
-		compatible = "fsl,mpc8641-pcie";
+	pcie@ffe08000 {
+		compatible = "fsl,mpc8548-pcie";
 		device_type = "pci";
 		#interrupt-cells = <1>;
 		#size-cells = <2>;
 		#address-cells = <3>;
-		reg = <f8008000 1000>;
+		reg = <ffe08000 1000>;
 		bus-range = <0 ff>;
 		ranges = <02000000 0 80000000 80000000 0 20000000
-			  01000000 0 00000000 e2000000 0 00100000>;
+			  01000000 0 00000000 ffc00000 0 00010000>;
 		clock-frequency = <1fca055>;
 		interrupt-parent = <&mpic>;
 		interrupts = <18 2>;
 		interrupt-map-mask = <fb00 0 0 0>;
 		interrupt-map = <
-			/* IDSEL 0x11 */
-			8800 0 0 1 &i8259 9 2
-			8800 0 0 2 &i8259 a 2
-			8800 0 0 3 &i8259 b 2
-			8800 0 0 4 &i8259 c 2
+			/* IDSEL 0x11 - PCI slot 1 */
+			8800 0 0 1 &mpic 2 1
+			8800 0 0 2 &mpic 3 1
+			8800 0 0 3 &mpic 4 1
+			8800 0 0 4 &mpic 1 1
 
-			/* IDSEL 0x12 */
-			9000 0 0 1 &i8259 a 2
-			9000 0 0 2 &i8259 b 2
-			9000 0 0 3 &i8259 c 2
-			9000 0 0 4 &i8259 9 2
+			/* IDSEL 0x12 - PCI slot 2 */
+			9000 0 0 1 &mpic 3 1
+			9000 0 0 2 &mpic 4 1
+			9000 0 0 3 &mpic 1 1
+			9000 0 0 4 &mpic 2 1
 
 			// IDSEL 0x1c  USB
 			e000 0 0 0 &i8259 c 2
@@ -265,6 +249,7 @@
 			// IDSEL 0x1f IDE/SATA
 			f800 0 0 0 &i8259 e 2
 			f900 0 0 0 &i8259 5 2
+
 			>;
 
 		pcie@0 {
@@ -286,6 +271,7 @@
 				ranges = <02000000 0 80000000
 					  02000000 0 80000000
 					  0 20000000
+
 					  01000000 0 00000000
 					  01000000 0 00000000
 					  0 00100000>;
@@ -332,8 +318,7 @@
 					};
 
 					rtc@70 {
-						compatible =
-							"pnpPNP,b00";
+						compatible = "pnpPNP,b00";
 						reg = <1 70 2>;
 					};
 
@@ -346,19 +331,19 @@
 
 	};
 
-	pcie@f8009000 {
-		compatible = "fsl,mpc8641-pcie";
+	pcie@ffe09000 {
+		compatible = "fsl,mpc8548-pcie";
 		device_type = "pci";
 		#interrupt-cells = <1>;
 		#size-cells = <2>;
 		#address-cells = <3>;
-		reg = <f8009000 1000>;
+		reg = <ffe09000 1000>;
 		bus-range = <0 ff>;
 		ranges = <02000000 0 a0000000 a0000000 0 20000000
-			  01000000 0 00000000 e3000000 0 00100000>;
+			  01000000 0 00000000 ffc10000 0 00010000>;
 		clock-frequency = <1fca055>;
 		interrupt-parent = <&mpic>;
-		interrupts = <19 2>;
+		interrupts = <1a 2>;
 		interrupt-map-mask = <f800 0 0 7>;
 		interrupt-map = <
 			/* IDSEL 0x0 */
@@ -374,6 +359,41 @@
 			device_type = "pci";
 			ranges = <02000000 0 a0000000
 				  02000000 0 a0000000
+				  0 20000000
+
+				  01000000 0 00000000
+				  01000000 0 00000000
+				  0 00100000>;
+		};
+	};
+
+	pcie@ffe0a000 {
+		compatible = "fsl,mpc8548-pcie";
+		device_type = "pci";
+		#interrupt-cells = <1>;
+		#size-cells = <2>;
+		#address-cells = <3>;
+		reg = <ffe0a000 1000>;
+		bus-range = <0 ff>;
+		ranges = <02000000 0 c0000000 c0000000 0 20000000
+			  01000000 0 00000000 ffc20000 0 00010000>;
+		clock-frequency = <1fca055>;
+		interrupt-parent = <&mpic>;
+		interrupts = <1b 2>;
+		interrupt-map = <
+			/* IDSEL 0x0 */
+			0000 0 0 1 &mpic 0 1
+			0000 0 0 2 &mpic 1 1
+			0000 0 0 3 &mpic 2 1
+			0000 0 0 4 &mpic 3 1
+			>;
+		pcie@0 {
+			reg = <0 0 0 0 0>;
+			#size-cells = <2>;
+			#address-cells = <3>;
+			device_type = "pci";
+			ranges = <02000000 0 c0000000
+				  02000000 0 c0000000
 				  0 20000000
 
 				  01000000 0 00000000
