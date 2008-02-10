@@ -1,7 +1,7 @@
 /*
- * MPC8349E MDS Device Tree Source
+ * MPC8379E MDS Device Tree Source
  *
- * Copyright 2005, 2006 Freescale Semiconductor Inc.
+ * Copyright 2007 Freescale Semiconductor Inc.
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -12,8 +12,8 @@
 /dts-v1/;
 
 / {
-	model = "MPC8349EMDS";
-	compatible = "MPC8349EMDS", "MPC834xMDS", "MPC83xxMDS";
+	model = "fsl,mpc8379emds";
+	compatible = "fsl,mpc8379emds","fsl,mpc837xmds";
 	#address-cells = <1>;
 	#size-cells = <1>;
 
@@ -23,37 +23,31 @@
 		serial0 = &serial0;
 		serial1 = &serial1;
 		pci0 = &pci0;
-		pci1 = &pci1;
 	};
 
 	cpus {
 		#address-cells = <1>;
 		#size-cells = <0>;
 
-		PowerPC,8349@0 {
+		PowerPC,8379@0 {
 			device_type = "cpu";
 			reg = <0x0>;
 			d-cache-line-size = <32>;
 			i-cache-line-size = <32>;
 			d-cache-size = <32768>;
 			i-cache-size = <32768>;
-			timebase-frequency = <0>;	// from bootloader
-			bus-frequency = <0>;		// from bootloader
-			clock-frequency = <0>;		// from bootloader
+			timebase-frequency = <0>;
+			bus-frequency = <0>;
+			clock-frequency = <0>;
 		};
 	};
 
 	memory {
 		device_type = "memory";
-		reg = <0x00000000 0x10000000>;	// 256MB at 0
+		reg = <0x00000000 0x20000000>;	// 512MB at 0
 	};
 
-	bcsr@e2400000 {
-		device_type = "board-control";
-		reg = <0xe2400000 0x8000>;
-	};
-
-	soc8349@e0000000 {
+	soc@e0000000 {
 		#address-cells = <1>;
 		#size-cells = <1>;
 		device_type = "soc";
@@ -62,7 +56,6 @@
 		bus-frequency = <0>;
 
 		wdt@200 {
-			device_type = "watchdog";
 			compatible = "mpc83xx_wdt";
 			reg = <0x200 0x100>;
 		};
@@ -76,11 +69,6 @@
 			interrupts = <14 0x8>;
 			interrupt-parent = <&ipic>;
 			dfsrr;
-
-			rtc@68 {
-				compatible = "dallas,ds1374";
-				reg = <0x68>;
-			};
 		};
 
 		i2c@3100 {
@@ -103,18 +91,6 @@
 			mode = "cpu";
 		};
 
-		/* phy type (ULPI or SERIAL) are only types supported for MPH */
-		/* port = 0 or 1 */
-		usb@22000 {
-			compatible = "fsl-usb2-mph";
-			reg = <0x22000 0x1000>;
-			#address-cells = <1>;
-			#size-cells = <0>;
-			interrupt-parent = <&ipic>;
-			interrupts = <39 0x8>;
-			phy_type = "ulpi";
-			port1;
-		};
 		/* phy type (ULPI, UTMI, UTMI_WIDE, SERIAL) */
 		usb@23000 {
 			compatible = "fsl-usb2-dr";
@@ -123,8 +99,7 @@
 			#size-cells = <0>;
 			interrupt-parent = <&ipic>;
 			interrupts = <38 0x8>;
-			dr_mode = "otg";
-			phy_type = "ulpi";
+			phy_type = "utmi_wide";
 		};
 
 		mdio@24520 {
@@ -132,17 +107,16 @@
 			#size-cells = <0>;
 			compatible = "fsl,gianfar-mdio";
 			reg = <0x24520 0x20>;
-
-			phy0: ethernet-phy@0 {
+			phy2: ethernet-phy@2 {
 				interrupt-parent = <&ipic>;
 				interrupts = <17 0x8>;
-				reg = <0x0>;
+				reg = <0x2>;
 				device_type = "ethernet-phy";
 			};
-			phy1: ethernet-phy@1 {
+			phy3: ethernet-phy@3 {
 				interrupt-parent = <&ipic>;
 				interrupts = <18 0x8>;
-				reg = <0x1>;
+				reg = <0x3>;
 				device_type = "ethernet-phy";
 			};
 		};
@@ -150,27 +124,27 @@
 		enet0: ethernet@24000 {
 			cell-index = <0>;
 			device_type = "network";
-			model = "TSEC";
+			model = "eTSEC";
 			compatible = "gianfar";
 			reg = <0x24000 0x1000>;
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			interrupts = <32 0x8 33 0x8 34 0x8>;
+			phy-connection-type = "mii";
 			interrupt-parent = <&ipic>;
-			phy-handle = <&phy0>;
-			linux,network-index = <0>;
+			phy-handle = <&phy2>;
 		};
 
 		enet1: ethernet@25000 {
 			cell-index = <1>;
 			device_type = "network";
-			model = "TSEC";
+			model = "eTSEC";
 			compatible = "gianfar";
 			reg = <0x25000 0x1000>;
 			local-mac-address = [ 00 00 00 00 00 00 ];
 			interrupts = <35 0x8 36 0x8 37 0x8>;
+			phy-connection-type = "mii";
 			interrupt-parent = <&ipic>;
-			phy-handle = <&phy1>;
-			linux,network-index = <1>;
+			phy-handle = <&phy3>;
 		};
 
 		serial0: serial@4500 {
@@ -193,20 +167,53 @@
 			interrupt-parent = <&ipic>;
 		};
 
-		/* May need to remove if on a part without crypto engine */
 		crypto@30000 {
-			device_type = "crypto";
-			model = "SEC2";
+			model = "SEC3";
 			compatible = "talitos";
 			reg = <0x30000 0x10000>;
 			interrupts = <11 0x8>;
 			interrupt-parent = <&ipic>;
+			/* Rev. 3.0 geometry */
 			num-channels = <4>;
 			channel-fifo-len = <24>;
-			exec-units-mask = <0x0000007e>;
-			/* desc mask is for rev2.0,
-			 * we need runtime fixup for >2.0 */
-			descriptor-types-mask = <0x01010ebf>;
+			exec-units-mask = <0x000001fe>;
+			descriptor-types-mask = <0x03ab0ebf>;
+		};
+
+		sdhc@2e000 {
+			model = "eSDHC";
+			compatible = "fsl,esdhc";
+			reg = <0x2e000 0x1000>;
+			interrupts = <42 0x8>;
+			interrupt-parent = <&ipic>;
+		};
+
+		sata@18000 {
+			compatible = "fsl,mpc8379-sata";
+			reg = <0x18000 0x1000>;
+			interrupts = <44 0x8>;
+			interrupt-parent = <&ipic>;
+		};
+
+		sata@19000 {
+			compatible = "fsl,mpc8379-sata";
+			reg = <0x19000 0x1000>;
+			interrupts = <45 0x8>;
+			interrupt-parent = <&ipic>;
+		};
+
+		sata@1a000 {
+			compatible = "fsl,mpc8379-sata";
+			reg = <0x1a000 0x1000>;
+			interrupts = <46 0x8>;
+			interrupt-parent = <&ipic>;
+		};
+
+		sata@1b000 {
+			compatible = "fsl,mpc8379-sata";
+			reg = <0x1b000 0x1000>;
+			interrupts = <47 0x8>;
+			interrupt-parent = <&ipic>;
 		};
 
 		/* IPIC
@@ -216,16 +223,16 @@
 		 * sense == 2: Edge, high-to-low change
 		 */
 		ipic: pic@700 {
+			compatible = "fsl,ipic";
 			interrupt-controller;
 			#address-cells = <0>;
 			#interrupt-cells = <2>;
 			reg = <0x700 0x100>;
-			device_type = "ipic";
 		};
 	};
 
 	pci0: pci@e0008500 {
-		cell-index = <1>;
+		cell-index = <0>;
 		interrupt-map-mask = <0xf800 0x0 0x0 0x7>;
 		interrupt-map = <
 
@@ -272,76 +279,15 @@
 				 0xc000 0x0 0x0 0x4 &ipic 20 0x8>;
 		interrupt-parent = <&ipic>;
 		interrupts = <66 0x8>;
-		bus-range = <0 0>;
+		bus-range = <0x0 0x0>;
 		ranges = <0x02000000 0x0 0x90000000 0x90000000 0x0 0x10000000
-			  0x42000000 0x0 0x80000000 0x80000000 0x0 0x10000000
-			  0x01000000 0x0 0x00000000 0xe2000000 0x0 0x00100000>;
-		clock-frequency = <66666666>;
+		          0x42000000 0x0 0x80000000 0x80000000 0x0 0x10000000
+		          0x01000000 0x0 0x00000000 0xe0300000 0x0 0x00100000>;
+		clock-frequency = <0>;
 		#interrupt-cells = <1>;
 		#size-cells = <2>;
 		#address-cells = <3>;
 		reg = <0xe0008500 0x100>;
-		compatible = "fsl,mpc8349-pci";
-		device_type = "pci";
-	};
-
-	pci1: pci@e0008600 {
-		cell-index = <2>;
-		interrupt-map-mask = <0xf800 0x0 0x0 0x7>;
-		interrupt-map = <
-
-				/* IDSEL 0x11 */
-				 0x8800 0x0 0x0 0x1 &ipic 20 0x8
-				 0x8800 0x0 0x0 0x2 &ipic 21 0x8
-				 0x8800 0x0 0x0 0x3 &ipic 22 0x8
-				 0x8800 0x0 0x0 0x4 &ipic 23 0x8
-
-				/* IDSEL 0x12 */
-				 0x9000 0x0 0x0 0x1 &ipic 22 0x8
-				 0x9000 0x0 0x0 0x2 &ipic 23 0x8
-				 0x9000 0x0 0x0 0x3 &ipic 20 0x8
-				 0x9000 0x0 0x0 0x4 &ipic 21 0x8
-
-				/* IDSEL 0x13 */
-				 0x9800 0x0 0x0 0x1 &ipic 23 0x8
-				 0x9800 0x0 0x0 0x2 &ipic 20 0x8
-				 0x9800 0x0 0x0 0x3 &ipic 21 0x8
-				 0x9800 0x0 0x0 0x4 &ipic 22 0x8
-
-				/* IDSEL 0x15 */
-				 0xa800 0x0 0x0 0x1 &ipic 20 0x8
-				 0xa800 0x0 0x0 0x2 &ipic 21 0x8
-				 0xa800 0x0 0x0 0x3 &ipic 22 0x8
-				 0xa800 0x0 0x0 0x4 &ipic 23 0x8
-
-				/* IDSEL 0x16 */
-				 0xb000 0x0 0x0 0x1 &ipic 23 0x8
-				 0xb000 0x0 0x0 0x2 &ipic 20 0x8
-				 0xb000 0x0 0x0 0x3 &ipic 21 0x8
-				 0xb000 0x0 0x0 0x4 &ipic 22 0x8
-
-				/* IDSEL 0x17 */
-				 0xb800 0x0 0x0 0x1 &ipic 22 0x8
-				 0xb800 0x0 0x0 0x2 &ipic 23 0x8
-				 0xb800 0x0 0x0 0x3 &ipic 20 0x8
-				 0xb800 0x0 0x0 0x4 &ipic 21 0x8
-
-				/* IDSEL 0x18 */
-				 0xc000 0x0 0x0 0x1 &ipic 21 0x8
-				 0xc000 0x0 0x0 0x2 &ipic 22 0x8
-				 0xc000 0x0 0x0 0x3 &ipic 23 0x8
-				 0xc000 0x0 0x0 0x4 &ipic 20 0x8>;
-		interrupt-parent = <&ipic>;
-		interrupts = <67 0x8>;
-		bus-range = <0 0>;
-		ranges = <0x02000000 0x0 0xb0000000 0xb0000000 0x0 0x10000000
-			  0x42000000 0x0 0xa0000000 0xa0000000 0x0 0x10000000
-			  0x01000000 0x0 0x00000000 0xe2100000 0x0 0x00100000>;
-		clock-frequency = <66666666>;
-		#interrupt-cells = <1>;
-		#size-cells = <2>;
-		#address-cells = <3>;
-		reg = <0xe0008600 0x100>;
 		compatible = "fsl,mpc8349-pci";
 		device_type = "pci";
 	};

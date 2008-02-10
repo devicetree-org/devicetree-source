@@ -1,8 +1,8 @@
 /*
- * Device Tree Source for IBM Walnut
+ * Device Tree Source for EP405
  *
  * Copyright 2007 IBM Corp.
- * Josh Boyer <jwboyer@linux.vnet.ibm.com>
+ * Benjamin Herrenschmidt <benh@kernel.crashing.org>
  *
  * This file is licensed under the terms of the GNU General Public
  * License version 2.  This program is licensed "as is" without
@@ -12,8 +12,8 @@
 / {
 	#address-cells = <1>;
 	#size-cells = <1>;
-	model = "ibm,walnut";
-	compatible = "ibm,walnut";
+	model = "ep405";
+	compatible = "ep405";
 	dcr-parent = <&/cpus/cpu@0>;
 
 	aliases {
@@ -142,7 +142,7 @@
 				rx-fifo-size = <1000>;
 				tx-fifo-size = <800>;
 				phy-mode = "rmii";
-				phy-map = <00000001>;
+				phy-map = <00000000>;
 			};
 
 		};
@@ -152,50 +152,42 @@
 			dcr-reg = <012 2>;
 			#address-cells = <2>;
 			#size-cells = <1>;
+
+
 			/* The ranges property is supplied by the bootwrapper
 			 * and is based on the firmware's configuration of the
 			 * EBC bridge
 			 */
 			clock-frequency = <0>; /* Filled in by zImage */
 
-			sram@0,0 {
-				reg = <0 0 80000>;
+			/* NVRAM and RTC */
+			nvrtc@4,200000 {
+				compatible = "ds1742";
+				reg = <4 200000 0>; /* size fixed up by zImage */
 			};
 
-			flash@0,80000 {
-				compatible = "jedec-flash";
-				bank-width = <1>;
-				reg = <0 80000 80000>;
-				#address-cells = <1>;
-				#size-cells = <1>;
-				partition@0 {
-					label = "OpenBIOS";
-					reg = <0 80000>;
-					read-only;
-				};
-			};
-
-			nvram@1,0 {
-				/* NVRAM and RTC */
-				compatible = "ds1743-nvram";
-				#bytes = <2000>;
-				reg = <1 0 2000>;
-			};
-
-			keyboard@2,0 {
-				compatible = "intel,82C42PC";
-				reg = <2 0 2>;
-			};
-
-			ir@3,0 {
-				compatible = "ti,TIR2000PAG";
-				reg = <3 0 10>;
-			};
-
-			fpga@7,0 {
-				compatible = "Walnut-FPGA";
-				reg = <7 0 10>;
-				virtual-reg = <f0300005>;
+			/* "BCSR" CPLD contains a PCI irq controller */
+			bcsr@4,0 {
+				compatible = "ep405-bcsr";
+				reg = <4 0 10>;
+				interrupt-controller;
+				/* Routing table */
+				irq-routing = [	00	/* SYSERR */
+						01	/* STTM */
+						01	/* RTC */
+						01	/* FENET */
+						02	/* NB PCIIRQ mux ? */
+						03	/* SB Winbond 8259 ? */
+						04	/* Serial Ring */
+						05	/* USB (ep405pc) */
+						06	/* XIRQ 0 */
+						06	/* XIRQ 1 */
+						06	/* XIRQ 2 */
+						06	/* XIRQ 3 */
+						06	/* XIRQ 4 */
+						06	/* XIRQ 5 */
+						06	/* XIRQ 6 */
+						07];	/* Reserved */
 			};
 		};
 
@@ -221,20 +213,11 @@
 			/* Inbound 2GB range starting at 0 */
 			dma-ranges = <42000000 0 0 0 0 80000000>;
 
-			/* Walnut has all 4 IRQ pins tied together per slot */
+			/* That's all I know about IRQs on that thing ... */
 			interrupt-map-mask = <f800 0 0 0>;
 			interrupt-map = <
-				/* IDSEL 1 */
-				0800 0 0 0 &UIC0 1c 8
-
-				/* IDSEL 2 */
-				1000 0 0 0 &UIC0 1d 8
-
-				/* IDSEL 3 */
-				1800 0 0 0 &UIC0 1e 8
-
-				/* IDSEL 4 */
-				2000 0 0 0 &UIC0 1f 8
+				/* USB */
+				7000 0 0 0 &UIC0 1e 8 /* IRQ5 */
 			>;
 		};
 	};
