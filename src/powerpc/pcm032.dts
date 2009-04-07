@@ -1,10 +1,10 @@
 /*
- * phyCORE-MPC5200B-tiny (pcm030) board Device Tree Source
+ * phyCORE-MPC5200B-IO (pcm032) board Device Tree Source
  *
- * Copyright 2006 Pengutronix
+ * Copyright (C) 2006-2009 Pengutronix
  * Sascha Hauer <s.hauer@pengutronix.de>
- * Copyright 2007 Pengutronix
  * Juergen Beisert <j.beisert@pengutronix.de>
+ * Wolfram Sang <w.sang@pengutronix.de>
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -15,8 +15,8 @@
 /dts-v1/;
 
 / {
-	model = "phytec,pcm030";
-	compatible = "phytec,pcm030";
+	model = "phytec,pcm032";
+	compatible = "phytec,pcm032";
 	#address-cells = <1>;
 	#size-cells = <1>;
 	interrupt-parent = <&mpc5200_pic>;
@@ -40,7 +40,7 @@
 
 	memory {
 		device_type = "memory";
-		reg = <0x00000000 0x04000000>;	// 64MB
+		reg = <0x00000000 0x08000000>;	// 128MB
 	};
 
 	soc5200@f0000000 {
@@ -78,7 +78,7 @@
 		};
 
 		gpt2: timer@620 {	// General Purpose Timer in GPIO mode
-			compatible = "fsl,mpc5200b-gpt-gpio","fsl,mpc5200-gpt-gpio";
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
 			reg = <0x620 0x10>;
 			interrupts = <1 11 0>;
 			gpio-controller;
@@ -86,7 +86,7 @@
 		};
 
 		gpt3: timer@630 {	// General Purpose Timer in GPIO mode
-			compatible = "fsl,mpc5200b-gpt-gpio","fsl,mpc5200-gpt-gpio";
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
 			reg = <0x630 0x10>;
 			interrupts = <1 12 0>;
 			gpio-controller;
@@ -94,7 +94,7 @@
 		};
 
 		gpt4: timer@640 {	// General Purpose Timer in GPIO mode
-			compatible = "fsl,mpc5200b-gpt-gpio","fsl,mpc5200-gpt-gpio";
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
 			reg = <0x640 0x10>;
 			interrupts = <1 13 0>;
 			gpio-controller;
@@ -102,7 +102,7 @@
 		};
 
 		gpt5: timer@650 {	// General Purpose Timer in GPIO mode
-			compatible = "fsl,mpc5200b-gpt-gpio","fsl,mpc5200-gpt-gpio";
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
 			reg = <0x650 0x10>;
 			interrupts = <1 14 0>;
 			gpio-controller;
@@ -110,7 +110,7 @@
 		};
 
 		gpt6: timer@660 {	// General Purpose Timer in GPIO mode
-			compatible = "fsl,mpc5200b-gpt-gpio","fsl,mpc5200-gpt-gpio";
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
 			reg = <0x660 0x10>;
 			interrupts = <1 15 0>;
 			gpio-controller;
@@ -118,7 +118,7 @@
 		};
 
 		gpt7: timer@670 {	// General Purpose Timer in GPIO mode
-			compatible = "fsl,mpc5200b-gpt-gpio","fsl,mpc5200-gpt-gpio";
+			compatible = "fsl,mpc5200b-gpt","fsl,mpc5200-gpt";
 			reg = <0x670 0x10>;
 			interrupts = <1 16 0>;
 			gpio-controller;
@@ -185,8 +185,8 @@
 			reg = <0x1f00 0x100>;
 		};
 
-		ac97@2000 { /* PSC1 in ac97 mode */
-			compatible = "mpc5200b-psc-ac97","fsl,mpc5200b-psc-ac97";
+		ac97@2000 {	/* PSC1 is ac97 */
+			compatible = "fsl,mpc5200b-psc-ac97","fsl,mpc5200-psc-ac97";
 			cell-index = <0>;
 			reg = <0x2000 0x100>;
 			interrupts = <2 1 0>;
@@ -258,33 +258,15 @@
 				compatible = "nxp,pcf8563";
 				reg = <0x51>;
 			};
-			/* FIXME: EEPROM */
+			eeprom@52 {
+				compatible = "at24,24c32";
+				reg = <0x52>;
+			};
 		};
 
 		sram@8000 {
 			compatible = "fsl,mpc5200b-sram","fsl,mpc5200-sram";
 			reg = <0x8000 0x4000>;
-		};
-
-		/* This is only an example device to show the usage of gpios. It maps all available
-		 * gpios to the "gpio-provider" device.
-		 */
-		gpio {
-			compatible = "gpio-provider";
-
-						    /* mpc52xx		exp.con		patchfield */
-			gpios = <&gpio_wkup	0 0 /* GPIO_WKUP_7	11d		jp13-3     */
-				 &gpio_wkup	1 0 /* GPIO_WKUP_6	14c			   */
-				 &gpio_wkup	6 0 /* PSC2_4		43c		x5-11	   */
-				 &gpio_simple	2 0 /* IRDA_1		24c		x7-6	set GPS_PORT_CONFIG[IRDA] = 0 */
-				 &gpio_simple	3 0 /* IRDA_0				x8-5	set GPS_PORT_CONFIG[IRDA] = 0 */
-				 &gpt2		0 0 /* timer2		12d		x4-4	   */
-				 &gpt3		0 0 /* timer3		13d		x6-4	   */
-				 &gpt4		0 0 /* timer4		61c		x2-16	   */
-				 &gpt5		0 0 /* timer5		44c		x7-11	   */
-				 &gpt6		0 0 /* timer6		60c		x8-15	   */
-				 &gpt7		0 0 /* timer7		36a		x17-9	   */
-				 >;
 		};
 	};
 
@@ -312,4 +294,99 @@
 			  0x02000000 0 0xa0000000 0xa0000000 0 0x10000000
 			  0x01000000 0 0x00000000 0xb0000000 0 0x01000000>;
 	};
+
+	localbus {
+		compatible = "fsl,mpc5200b-lpb","fsl,mpc5200-lpb","simple-bus";
+
+		#address-cells = <2>;
+		#size-cells = <1>;
+
+		ranges = <0 0 0xfe000000 0x02000000
+			  1 0 0xfc000000 0x02000000
+			  2 0 0xfbe00000 0x00200000
+			  3 0 0xf9e00000 0x02000000
+			  4 0 0xf7e00000 0x02000000
+			  5 0 0xe6000000 0x02000000
+			  6 0 0xe8000000 0x02000000
+			  7 0 0xea000000 0x02000000>;
+
+		flash@0,0 {
+			compatible = "cfi-flash";
+			reg = <0 0 0x02000000>;
+			bank-width = <4>;
+			#size-cells = <1>;
+			#address-cells = <1>;
+
+			partition@0 {
+				label = "ubootl";
+				reg = <0x00000000 0x00040000>;
+			};
+			partition@40000 {
+				label = "kernel";
+				reg = <0x00040000 0x001c0000>;
+			};
+			partition@200000 {
+				label = "jffs2";
+				reg = <0x00200000 0x01d00000>;
+			};
+			partition@1f00000 {
+				label = "uboot";
+				reg = <0x01f00000 0x00040000>;
+			};
+			partition@1f40000 {
+				label = "env";
+				reg = <0x01f40000 0x00040000>;
+			};
+			partition@1f80000 {
+				label = "oftree";
+				reg = <0x01f80000 0x00040000>;
+			};
+			partition@1fc0000 {
+				label = "space";
+				reg = <0x01fc0000 0x00040000>;
+			};
+		};
+
+		sram@2,0 {
+			compatible = "mtd-ram";
+			reg = <2 0 0x00200000>;
+			bank-width = <2>;
+		};
+
+                /*
+		 * example snippets for FPGA
+		 *
+		 * fpga@3,0 {
+		 *         compatible = "fpga_driver";
+		 *         reg = <3 0 0x02000000>;
+		 *         bank-width = <4>;
+		 * };
+		 *
+		 * fpga@4,0 {
+		 *         compatible = "fpga_driver";
+		 *         reg = <4 0 0x02000000>;
+		 *         bank-width = <4>;
+		 * };
+                 */
+
+                /*
+		 * example snippets for free chipselects
+                 *
+		 * device@5,0 {
+		 *         compatible = "custom_driver";
+		 *         reg = <5 0 0x02000000>;
+		 * };
+                 *
+		 * device@6,0 {
+		 *         compatible = "custom_driver";
+		 *         reg = <6 0 0x02000000>;
+		 * };
+                 *
+		 * device@7,0 {
+		 *         compatible = "custom_driver";
+		 *         reg = <7 0 0x02000000>;
+		 * };
+                 */
+	};
 };
+
