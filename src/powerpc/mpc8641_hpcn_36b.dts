@@ -1,7 +1,7 @@
 /*
  * MPC8641 HPCN Device Tree Source
  *
- * Copyright 2006 Freescale Semiconductor Inc.
+ * Copyright 2008-2009 Freescale Semiconductor Inc.
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -14,8 +14,8 @@
 / {
 	model = "MPC8641HPCN";
 	compatible = "fsl,mpc8641hpcn";
-	#address-cells = <1>;
-	#size-cells = <1>;
+	#address-cells = <2>;
+	#size-cells = <2>;
 
 	aliases {
 		ethernet0 = &enet0;
@@ -26,13 +26,6 @@
 		serial1 = &serial1;
 		pci0 = &pci0;
 		pci1 = &pci1;
-/*
- * Only one of Rapid IO or PCI can be present due to HW limitations and
- * due to the fact that the 2 now share address space in the new memory
- * map.  The most likely case is that we have PCI, so comment out the
- * rapidio node.  Leave it here for reference.
- */
-		/* rapidio0 = &rapidio0; */
 	};
 
 	cpus {
@@ -42,22 +35,22 @@
 		PowerPC,8641@0 {
 			device_type = "cpu";
 			reg = <0>;
-			d-cache-line-size = <32>;
-			i-cache-line-size = <32>;
-			d-cache-size = <32768>;		// L1
-			i-cache-size = <32768>;		// L1
-			timebase-frequency = <0>;	// From uboot
+			d-cache-line-size = <32>;	// 32 bytes
+			i-cache-line-size = <32>;	// 32 bytes
+			d-cache-size = <32768>;		// L1, 32K
+			i-cache-size = <32768>;		// L1, 32K
+			timebase-frequency = <0>;	// 33 MHz, from uboot
 			bus-frequency = <0>;		// From uboot
 			clock-frequency = <0>;		// From uboot
 		};
 		PowerPC,8641@1 {
 			device_type = "cpu";
 			reg = <1>;
-			d-cache-line-size = <32>;
-			i-cache-line-size = <32>;
-			d-cache-size = <32768>;
-			i-cache-size = <32768>;
-			timebase-frequency = <0>;	// From uboot
+			d-cache-line-size = <32>;	// 32 bytes
+			i-cache-line-size = <32>;	// 32 bytes
+			d-cache-size = <32768>;		// L1, 32K
+			i-cache-size = <32768>;		// L1, 32K
+			timebase-frequency = <0>;	// 33 MHz, from uboot
 			bus-frequency = <0>;		// From uboot
 			clock-frequency = <0>;		// From uboot
 		};
@@ -65,20 +58,20 @@
 
 	memory {
 		device_type = "memory";
-		reg = <0x00000000 0x40000000>;	// 1G at 0x0
+		reg = <0x0 0x00000000 0x0 0x40000000>;	// 1G at 0x0
 	};
 
-	localbus@ffe05000 {
+	localbus@fffe05000 {
 		#address-cells = <2>;
 		#size-cells = <1>;
 		compatible = "fsl,mpc8641-localbus", "simple-bus";
-		reg = <0xffe05000 0x1000>;
+		reg = <0x0f 0xffe05000 0x0 0x1000>;
 		interrupts = <19 2>;
 		interrupt-parent = <&mpic>;
 
-		ranges = <0 0 0xef800000 0x00800000
-			  2 0 0xffdf8000 0x00008000
-			  3 0 0xffdf0000 0x00008000>;
+		ranges = <0 0 0xf 0xef800000 0x00800000
+			  2 0 0xf 0xffdf8000 0x00008000
+			  3 0 0xf 0xffdf0000 0x00008000>;
 
 		flash@0,0 {
 			compatible = "cfi-flash";
@@ -108,12 +101,12 @@
 		};
 	};
 
-	soc8641@ffe00000 {
+	soc8641@fffe00000 {
 		#address-cells = <1>;
 		#size-cells = <1>;
 		device_type = "soc";
 		compatible = "simple-bus";
-		ranges = <0x00000000 0xffe00000 0x00100000>;
+		ranges = <0x00000000 0x0f 0xffe00000 0x00100000>;
 		bus-frequency = <0>;
 
 		mcm-law@0 {
@@ -202,7 +195,7 @@
 			reg = <0x24000 0x1000>;
 			ranges = <0x0 0x24000 0x1000>;
 			local-mac-address = [ 00 00 00 00 00 00 ];
-			interrupts = <29 2 30  2 34 2>;
+			interrupts = <29 2 30 2 34 2>;
 			interrupt-parent = <&mpic>;
 			tbi-handle = <&tbi0>;
 			phy-handle = <&phy0>;
@@ -273,7 +266,7 @@
 				};
 			};
 		};
-		
+
 		enet2: ethernet@26000 {
 			#address-cells = <1>;
 			#size-cells = <1>;
@@ -368,16 +361,17 @@
 		};
 	};
 
-	pci0: pcie@ffe08000 {
+	pci0: pcie@fffe08000 {
+		cell-index = <0>;
 		compatible = "fsl,mpc8641-pcie";
 		device_type = "pci";
 		#interrupt-cells = <1>;
 		#size-cells = <2>;
 		#address-cells = <3>;
-		reg = <0xffe08000 0x1000>;
+		reg = <0x0f 0xffe08000 0x0 0x1000>;
 		bus-range = <0x0 0xff>;
-		ranges = <0x02000000 0x0 0x80000000 0x80000000 0x0 0x20000000
-			  0x01000000 0x0 0x00000000 0xffc00000 0x0 0x00010000>;
+		ranges = <0x02000000 0x0 0xe0000000 0x0c 0x00000000 0x0 0x20000000
+			  0x01000000 0x0 0x00000000 0x0f 0xffc00000 0x0 0x00010000>;
 		clock-frequency = <33333333>;
 		interrupt-parent = <&mpic>;
 		interrupts = <24 2>;
@@ -502,8 +496,8 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
-			ranges = <0x02000000 0x0 0x80000000
-				  0x02000000 0x0 0x80000000
+			ranges = <0x02000000 0x0 0xe0000000
+				  0x02000000 0x0 0xe0000000
 				  0x0 0x20000000
 
 				  0x01000000 0x0 0x00000000
@@ -513,8 +507,8 @@
 				reg = <0 0 0 0 0>;
 				#size-cells = <2>;
 				#address-cells = <3>;
-				ranges = <0x02000000 0x0 0x80000000
-					  0x02000000 0x0 0x80000000
+				ranges = <0x02000000 0x0 0xe0000000
+					  0x02000000 0x0 0xe0000000
 					  0x0 0x20000000
 					  0x01000000 0x0 0x00000000
 					  0x01000000 0x0 0x00000000
@@ -576,16 +570,17 @@
 
 	};
 
-	pci1: pcie@ffe09000 {
+	pci1: pcie@fffe09000 {
+		cell-index = <1>;
 		compatible = "fsl,mpc8641-pcie";
 		device_type = "pci";
 		#interrupt-cells = <1>;
 		#size-cells = <2>;
 		#address-cells = <3>;
-		reg = <0xffe09000 0x1000>;
-		bus-range = <0 0xff>;
-		ranges = <0x02000000 0x0 0xa0000000 0xa0000000 0x0 0x20000000
-			  0x01000000 0x0 0x00000000 0xffc10000 0x0 0x00010000>;
+		reg = <0x0f 0xffe09000 0x0 0x1000>;
+		bus-range = <0x0 0xff>;
+		ranges = <0x02000000 0x0 0xe0000000 0x0c 0x20000000 0x0 0x20000000
+			  0x01000000 0x0 0x00000000 0x0f 0xffc10000 0x0 0x00010000>;
 		clock-frequency = <33333333>;
 		interrupt-parent = <&mpic>;
 		interrupts = <25 2>;
@@ -602,8 +597,8 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
-			ranges = <0x02000000 0x0 0xa0000000
-				  0x02000000 0x0 0xa0000000
+			ranges = <0x02000000 0x0 0xe0000000
+				  0x02000000 0x0 0xe0000000
 				  0x0 0x20000000
 
 				  0x01000000 0x0 0x00000000
@@ -611,18 +606,4 @@
 				  0x0 0x00010000>;
 		};
 	};
-/*
-	rapidio0: rapidio@ffec0000 {
-		#address-cells = <2>;
-		#size-cells = <2>;
-		compatible = "fsl,rapidio-delta";
-		reg = <0xffec0000 0x20000>;
-		ranges = <0 0 0x80000000 0 0x20000000>;
-		interrupt-parent = <&mpic>;
-		// err_irq bell_outb_irq bell_inb_irq
-		//	msg1_tx_irq msg1_rx_irq	msg2_tx_irq msg2_rx_irq
-		interrupts = <48 2 49 2 50 2 53 2 54 2 55 2 56 2>;
-	};
-*/
-
 };
