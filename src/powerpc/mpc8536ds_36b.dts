@@ -1,7 +1,7 @@
 /*
  * MPC8536 DS Device Tree Source
  *
- * Copyright 2008 Freescale Semiconductor, Inc.
+ * Copyright 2008-2009 Freescale Semiconductor, Inc.
  *
  * This program is free software; you can redistribute  it and/or modify it
  * under  the terms of  the GNU General  Public License as published by the
@@ -45,12 +45,12 @@
 		reg = <0 0 0 0>;	// Filled by U-Boot
 	};
 
-	soc@ffe00000 {
+	soc@fffe00000 {
 		#address-cells = <1>;
 		#size-cells = <1>;
 		device_type = "soc";
 		compatible = "simple-bus";
-		ranges = <0x0 0 0xffe00000 0x100000>;
+		ranges = <0x0 0xf 0xffe00000 0x100000>;
 		bus-frequency = <0>;		// Filled out by uboot.
 
 		ecm-law@0 {
@@ -340,7 +340,7 @@
 		};
 	};
 
-	pci0: pci@ffe08000 {
+	pci0: pci@fffe08000 {
 		compatible = "fsl,mpc8540-pci";
 		device_type = "pci";
 		interrupt-map-mask = <0xf800 0x0 0x0 0x7>;
@@ -355,25 +355,25 @@
 		interrupt-parent = <&mpic>;
 		interrupts = <24 0x2>;
 		bus-range = <0 0xff>;
-		ranges = <0x02000000 0 0x80000000 0 0x80000000 0 0x10000000
-			  0x01000000 0 0x00000000 0 0xffc00000 0 0x00010000>;
+		ranges = <0x02000000 0 0xf0000000 0xc 0x00000000 0 0x10000000
+			  0x01000000 0 0x00000000 0xf 0xffc00000 0 0x00010000>;
 		clock-frequency = <66666666>;
 		#interrupt-cells = <1>;
 		#size-cells = <2>;
 		#address-cells = <3>;
-		reg = <0 0xffe08000 0 0x1000>;
+		reg = <0xf 0xffe08000 0 0x1000>;
 	};
 
-	pci1: pcie@ffe09000 {
+	pci1: pcie@fffe09000 {
 		compatible = "fsl,mpc8548-pcie";
 		device_type = "pci";
 		#interrupt-cells = <1>;
 		#size-cells = <2>;
 		#address-cells = <3>;
-		reg = <0 0xffe09000 0 0x1000>;
+		reg = <0xf 0xffe09000 0 0x1000>;
 		bus-range = <0 0xff>;
-		ranges = <0x02000000 0 0x98000000 0 0x98000000 0 0x08000000
-			  0x01000000 0 0x00000000 0 0xffc20000 0 0x00010000>;
+		ranges = <0x02000000 0 0xf8000000 0xc 0x18000000 0 0x08000000
+			  0x01000000 0 0x00000000 0xf 0xffc20000 0 0x00010000>;
 		clock-frequency = <33333333>;
 		interrupt-parent = <&mpic>;
 		interrupts = <25 0x2>;
@@ -390,8 +390,8 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
-			ranges = <0x02000000 0 0x98000000
-				  0x02000000 0 0x98000000
+			ranges = <0x02000000 0 0xf8000000
+				  0x02000000 0 0xf8000000
 				  0 0x08000000
 
 				  0x01000000 0 0x00000000
@@ -400,16 +400,16 @@
 		};
 	};
 
-	pci2: pcie@ffe0a000 {
+	pci2: pcie@fffe0a000 {
 		compatible = "fsl,mpc8548-pcie";
 		device_type = "pci";
 		#interrupt-cells = <1>;
 		#size-cells = <2>;
 		#address-cells = <3>;
-		reg = <0 0xffe0a000 0 0x1000>;
+		reg = <0xf 0xffe0a000 0 0x1000>;
 		bus-range = <0 0xff>;
-		ranges = <0x02000000 0 0x90000000 0 0x90000000 0 0x08000000
-			  0x01000000 0 0x00000000 0 0xffc10000 0 0x00010000>;
+		ranges = <0x02000000 0 0xf8000000 0xc 0x10000000 0 0x08000000
+			  0x01000000 0 0x00000000 0xf 0xffc10000 0 0x00010000>;
 		clock-frequency = <33333333>;
 		interrupt-parent = <&mpic>;
 		interrupts = <26 0x2>;
@@ -426,8 +426,8 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
-			ranges = <0x02000000 0 0x90000000
-				  0x02000000 0 0x90000000
+			ranges = <0x02000000 0 0xf8000000
+				  0x02000000 0 0xf8000000
 				  0 0x08000000
 
 				  0x01000000 0 0x00000000
@@ -436,16 +436,16 @@
 		};
 	};
 
-	pci3: pcie@ffe0b000 {
+	pci3: pcie@fffe0b000 {
 		compatible = "fsl,mpc8548-pcie";
 		device_type = "pci";
 		#interrupt-cells = <1>;
 		#size-cells = <2>;
 		#address-cells = <3>;
-		reg = <0 0xffe0b000 0 0x1000>;
+		reg = <0xf 0xffe0b000 0 0x1000>;
 		bus-range = <0 0xff>;
-		ranges = <0x02000000 0 0xa0000000 0 0xa0000000 0 0x20000000
-			  0x01000000 0 0x00000000 0 0xffc30000 0 0x00010000>;
+		ranges = <0x02000000 0 0xe0000000 0xc 0x20000000 0 0x20000000
+			  0x01000000 0 0x00000000 0xf 0xffc30000 0 0x00010000>;
 		clock-frequency = <33333333>;
 		interrupt-parent = <&mpic>;
 		interrupts = <27 0x2>;
@@ -463,8 +463,8 @@
 			#size-cells = <2>;
 			#address-cells = <3>;
 			device_type = "pci";
-			ranges = <0x02000000 0 0xa0000000
-				  0x02000000 0 0xa0000000
+			ranges = <0x02000000 0 0xe0000000
+				  0x02000000 0 0xe0000000
 				  0 0x20000000
 
 				  0x01000000 0 0x00000000
