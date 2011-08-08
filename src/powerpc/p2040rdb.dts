@@ -1,7 +1,7 @@
 /*
- * P4080DS Device Tree Source
+ * P2040RDB Device Tree Source
  *
- * Copyright 2009-2011 Freescale Semiconductor Inc.
+ * Copyright 2011 Freescale Semiconductor Inc.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -32,11 +32,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/include/ "p4080si.dtsi"
+/include/ "p2040si.dtsi"
 
 / {
-	model = "fsl,P4080DS";
-	compatible = "fsl,P4080DS";
+	model = "fsl,P2040RDB";
+	compatible = "fsl,P2040RDB";
 	#address-cells = <2>;
 	#size-cells = <2>;
 	interrupt-parent = <&mpic>;
@@ -75,35 +75,36 @@
 			};
 		};
 
-		i2c@118100 {
-			eeprom@51 {
-				compatible = "at24,24c256";
-				reg = <0x51>;
+		i2c@118000 {
+			lm75b@48 {
+				compatible = "nxp,lm75a";
+				reg = <0x48>;
 			};
-			eeprom@52 {
+			eeprom@50 {
 				compatible = "at24,24c256";
-				reg = <0x52>;
+				reg = <0x50>;
 			};
 			rtc@68 {
-				compatible = "dallas,ds3232";
+				compatible = "pericom,pt7c4338";
 				reg = <0x68>;
-				interrupts = <0x1 0x1 0 0>;
+			};
+		};
+
+		i2c@118100 {
+			eeprom@50 {
+				compatible = "at24,24c256";
+				reg = <0x50>;
 			};
 		};
 
 		usb0: usb@210000 {
-			phy_type = "ulpi";
+			phy_type = "utmi";
 		};
 
 		usb1: usb@211000 {
 			dr_mode = "host";
-			phy_type = "ulpi";
+			phy_type = "utmi";
 		};
-	};
-
-	rapidio0: rapidio@ffe0c0000 {
-		reg = <0xf 0xfe0c0000 0 0x20000>;
-		ranges = <0 0 0xc 0x20000000 0 0x01000000>;
 	};
 
 	localbus@ffe124000 {
@@ -162,5 +163,4 @@
 				  0 0x00010000>;
 		};
 	};
-
 };
