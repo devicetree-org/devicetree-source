@@ -1,7 +1,7 @@
 /*
- * P3041 Silicon Device Tree Source
+ * P2041 Silicon Device Tree Source
  *
- * Copyright 2010-2011 Freescale Semiconductor Inc.
+ * Copyright 2011 Freescale Semiconductor Inc.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -35,7 +35,7 @@
 /dts-v1/;
 
 / {
-	compatible = "fsl,P3041";
+	compatible = "fsl,P2041";
 	#address-cells = <2>;
 	#size-cells = <2>;
 	interrupt-parent = <&mpic>;
@@ -51,7 +51,6 @@
 		pci0 = &pci0;
 		pci1 = &pci1;
 		pci2 = &pci2;
-		pci3 = &pci3;
 		usb0 = &usb0;
 		usb1 = &usb1;
 		dma0 = &dma0;
@@ -71,10 +70,6 @@
 		rtic_c = &rtic_c;
 		rtic_d = &rtic_d;
 		sec_mon = &sec_mon;
-
-/*
-		rio0 = &rapidio0;
- */
 	};
 
 	cpus {
@@ -141,11 +136,11 @@
 			reg = <0x8000 0x1000 0xB0000 0x1000>;
 		};
 		dcsr-dpaa@9000 {
-			compatible = "fsl,p43041-dcsr-dpaa", "fsl,dcsr-dpaa";
+			compatible = "fsl,p2041-dcsr-dpaa", "fsl,dcsr-dpaa";
 			reg = <0x9000 0x1000>;
 		};
 		dcsr-ocn@11000 {
-			compatible = "fsl,p43041-dcsr-ocn", "fsl,dcsr-ocn";
+			compatible = "fsl,p2041-dcsr-ocn", "fsl,dcsr-ocn";
 			reg = <0x11000 0x1000>;
 		};
 		dcsr-ddr@12000 {
@@ -154,11 +149,11 @@
 			reg = <0x12000 0x1000>;
 		};
 		dcsr-nal@18000 {
-			compatible = "fsl,p43041-dcsr-nal", "fsl,dcsr-nal";
+			compatible = "fsl,p2041-dcsr-nal", "fsl,dcsr-nal";
 			reg = <0x18000 0x1000>;
 		};
 		dcsr-rcpm@22000 {
-			compatible = "fsl,p43041-dcsr-rcpm", "fsl,dcsr-rcpm";
+			compatible = "fsl,p2041-dcsr-rcpm", "fsl,dcsr-rcpm";
 			reg = <0x22000 0x1000>;
 		};
 		dcsr-cpu-sb-proxy@40000 {
@@ -209,7 +204,7 @@
 		};
 
 		cpc: l3-cache-controller@10000 {
-			compatible = "fsl,p3041-l3-cache-controller", "fsl,p4080-l3-cache-controller", "cache";
+			compatible = "fsl,p2041-l3-cache-controller", "fsl,p4080-l3-cache-controller", "cache";
 			reg = <0x10000 0x1000>;
 			interrupts = <16 2 1 27>;
 		};
@@ -300,7 +295,7 @@
 		};
 
 		clockgen: global-utilities@e1000 {
-			compatible = "fsl,p3041-clockgen", "fsl,qoriq-clockgen-1.0";
+			compatible = "fsl,p2041-clockgen", "fsl,qoriq-clockgen-1.0";
 			reg = <0xe1000 0x1000>;
 			clock-frequency = <0>;
 		};
@@ -312,45 +307,45 @@
 		};
 
 		sfp: sfp@e8000 {
-			compatible = "fsl,p3041-sfp", "fsl,qoriq-sfp-1.0";
+			compatible = "fsl,p2041-sfp", "fsl,qoriq-sfp-1.0";
 			reg	   = <0xe8000 0x1000>;
 		};
 
 		serdes: serdes@ea000 {
-			compatible = "fsl,p3041-serdes";
+			compatible = "fsl,p2041-serdes";
 			reg	   = <0xea000 0x1000>;
 		};
 
 		dma0: dma@100300 {
 			#address-cells = <1>;
 			#size-cells = <1>;
-			compatible = "fsl,p3041-dma", "fsl,eloplus-dma";
+			compatible = "fsl,p2041-dma", "fsl,eloplus-dma";
 			reg = <0x100300 0x4>;
 			ranges = <0x0 0x100100 0x200>;
 			cell-index = <0>;
 			dma-channel@0 {
-				compatible = "fsl,p3041-dma-channel",
+				compatible = "fsl,p2041-dma-channel",
 						"fsl,eloplus-dma-channel";
 				reg = <0x0 0x80>;
 				cell-index = <0>;
 				interrupts = <28 2 0 0>;
 			};
 			dma-channel@80 {
-				compatible = "fsl,p3041-dma-channel",
+				compatible = "fsl,p2041-dma-channel",
 						"fsl,eloplus-dma-channel";
 				reg = <0x80 0x80>;
 				cell-index = <1>;
 				interrupts = <29 2 0 0>;
 			};
 			dma-channel@100 {
-				compatible = "fsl,p3041-dma-channel",
+				compatible = "fsl,p2041-dma-channel",
 						"fsl,eloplus-dma-channel";
 				reg = <0x100 0x80>;
 				cell-index = <2>;
 				interrupts = <30 2 0 0>;
 			};
 			dma-channel@180 {
-				compatible = "fsl,p3041-dma-channel",
+				compatible = "fsl,p2041-dma-channel",
 						"fsl,eloplus-dma-channel";
 				reg = <0x180 0x80>;
 				cell-index = <3>;
@@ -361,33 +356,33 @@
 		dma1: dma@101300 {
 			#address-cells = <1>;
 			#size-cells = <1>;
-			compatible = "fsl,p3041-dma", "fsl,eloplus-dma";
+			compatible = "fsl,p2041-dma", "fsl,eloplus-dma";
 			reg = <0x101300 0x4>;
 			ranges = <0x0 0x101100 0x200>;
 			cell-index = <1>;
 			dma-channel@0 {
-				compatible = "fsl,p3041-dma-channel",
+				compatible = "fsl,p2041-dma-channel",
 						"fsl,eloplus-dma-channel";
 				reg = <0x0 0x80>;
 				cell-index = <0>;
 				interrupts = <32 2 0 0>;
 			};
 			dma-channel@80 {
-				compatible = "fsl,p3041-dma-channel",
+				compatible = "fsl,p2041-dma-channel",
 						"fsl,eloplus-dma-channel";
 				reg = <0x80 0x80>;
 				cell-index = <1>;
 				interrupts = <33 2 0 0>;
 			};
 			dma-channel@100 {
-				compatible = "fsl,p3041-dma-channel",
+				compatible = "fsl,p2041-dma-channel",
 						"fsl,eloplus-dma-channel";
 				reg = <0x100 0x80>;
 				cell-index = <2>;
 				interrupts = <34 2 0 0>;
 			};
 			dma-channel@180 {
-				compatible = "fsl,p3041-dma-channel",
+				compatible = "fsl,p2041-dma-channel",
 						"fsl,eloplus-dma-channel";
 				reg = <0x180 0x80>;
 				cell-index = <3>;
@@ -398,14 +393,14 @@
 		spi@110000 {
 			#address-cells = <1>;
 			#size-cells = <0>;
-			compatible = "fsl,p3041-espi", "fsl,mpc8536-espi";
+			compatible = "fsl,p2041-espi", "fsl,mpc8536-espi";
 			reg = <0x110000 0x1000>;
 			interrupts = <53 0x2 0 0>;
 			fsl,espi-num-chipselects = <4>;
 		};
 
 		sdhc: sdhc@114000 {
-			compatible = "fsl,p3041-esdhc", "fsl,esdhc";
+			compatible = "fsl,p2041-esdhc", "fsl,esdhc";
 			reg = <0x114000 0x1000>;
 			interrupts = <48 2 0 0>;
 			sdhci,auto-cmd12;
@@ -489,7 +484,7 @@
 		};
 
 		gpio0: gpio@130000 {
-			compatible = "fsl,p3041-gpio", "fsl,qoriq-gpio";
+			compatible = "fsl,p2041-gpio", "fsl,qoriq-gpio";
 			reg = <0x130000 0x1000>;
 			interrupts = <55 2 0 0>;
 			#gpio-cells = <2>;
@@ -497,7 +492,7 @@
 		};
 
 		usb0: usb@210000 {
-			compatible = "fsl,p3041-usb2-mph",
+			compatible = "fsl,p2041-usb2-mph",
 					"fsl,mpc85xx-usb2-mph", "fsl-usb2-mph";
 			reg = <0x210000 0x1000>;
 			#address-cells = <1>;
@@ -508,24 +503,23 @@
 		};
 
 		usb1: usb@211000 {
-			compatible = "fsl,p3041-usb2-dr",
+			compatible = "fsl,p2041-usb2-dr",
 					"fsl,mpc85xx-usb2-dr", "fsl-usb2-dr";
 			reg = <0x211000 0x1000>;
 			#address-cells = <1>;
 			#size-cells = <0>;
 			interrupts = <45 0x2 0 0>;
-			dr_mode = "host";
 			phy_type = "utmi";
 		};
 
 		sata@220000 {
-			compatible = "fsl,p3041-sata", "fsl,pq-sata-v2";
+			compatible = "fsl,p2041-sata", "fsl,pq-sata-v2";
 			reg = <0x220000 0x1000>;
 			interrupts = <68 0x2 0 0>;
 		};
 
 		sata@221000 {
-			compatible = "fsl,p3041-sata", "fsl,pq-sata-v2";
+			compatible = "fsl,p2041-sata", "fsl,pq-sata-v2";
 			reg = <0x221000 0x1000>;
 			interrupts = <69 0x2 0 0>;
 		};
@@ -534,9 +528,9 @@
 			compatible = "fsl,sec-v4.2", "fsl,sec-v4.0";
 			#address-cells = <1>;
 			#size-cells = <1>;
-			reg		 = <0x300000 0x10000>;
-			ranges		 = <0 0x300000 0x10000>;
-			interrupts	 = <92 2 0 0>;
+			reg = <0x300000 0x10000>;
+			ranges = <0 0x300000 0x10000>;
+			interrupts = <92 2 0 0>;
 
 			sec_jr0: jr@1000 {
 				compatible = "fsl,sec-v4.2-job-ring",
@@ -605,29 +599,25 @@
 			reg = <0x314000 0x1000>;
 			interrupts = <93 2 0 0>;
 		};
+
 	};
 
-/*
-	rapidio0: rapidio@ffe0c0000
-*/
-
 	localbus@ffe124000 {
-		compatible = "fsl,p3041-elbc", "fsl,elbc", "simple-bus";
+		compatible = "fsl,p2041-elbc", "fsl,elbc", "simple-bus";
 		interrupts = <25 2 0 0>;
 		#address-cells = <2>;
 		#size-cells = <1>;
 	};
 
 	pci0: pcie@ffe200000 {
-		compatible = "fsl,p3041-pcie", "fsl,qoriq-pcie-v2.2";
+		compatible = "fsl,p2041-pcie", "fsl,qoriq-pcie-v2.2";
 		device_type = "pci";
 		#size-cells = <2>;
 		#address-cells = <3>;
 		bus-range = <0x0 0xff>;
-		clock-frequency = <0x1fca055>;
+		clock-frequency = <33333333>;
 		fsl,msi = <&msi0>;
 		interrupts = <16 2 1 15>;
-
 		pcie@0 {
 			reg = <0 0 0 0 0>;
 			#interrupt-cells = <1>;
@@ -647,12 +637,12 @@
 	};
 
 	pci1: pcie@ffe201000 {
-		compatible = "fsl,p3041-pcie", "fsl,qoriq-pcie-v2.2";
+		compatible = "fsl,p2041-pcie", "fsl,qoriq-pcie-v2.2";
 		device_type = "pci";
 		#size-cells = <2>;
 		#address-cells = <3>;
 		bus-range = <0 0xff>;
-		clock-frequency = <0x1fca055>;
+		clock-frequency = <33333333>;
 		fsl,msi = <&msi1>;
 		interrupts = <16 2 1 14>;
 		pcie@0 {
@@ -674,12 +664,12 @@
 	};
 
 	pci2: pcie@ffe202000 {
-		compatible = "fsl,p3041-pcie", "fsl,qoriq-pcie-v2.2";
+		compatible = "fsl,p2041-pcie", "fsl,qoriq-pcie-v2.2";
 		device_type = "pci";
 		#size-cells = <2>;
 		#address-cells = <3>;
 		bus-range = <0x0 0xff>;
-		clock-frequency = <0x1fca055>;
+		clock-frequency = <33333333>;
 		fsl,msi = <&msi2>;
 		interrupts = <16 2 1 13>;
 		pcie@0 {
@@ -696,33 +686,6 @@
 				0000 0 0 2 &mpic 9 1 0 0
 				0000 0 0 3 &mpic 10 1 0 0
 				0000 0 0 4 &mpic 11 1 0 0
-				>;
-		};
-	};
-
-	pci3: pcie@ffe203000 {
-		compatible = "fsl,p3041-pcie", "fsl,qoriq-pcie-v2.2";
-		device_type = "pci";
-		#size-cells = <2>;
-		#address-cells = <3>;
-		bus-range = <0x0 0xff>;
-		clock-frequency = <0x1fca055>;
-		fsl,msi = <&msi2>;
-		interrupts = <16 2 1 12>;
-		pcie@0 {
-			reg = <0 0 0 0 0>;
-			#interrupt-cells = <1>;
-			#size-cells = <2>;
-			#address-cells = <3>;
-			device_type = "pci";
-			interrupts = <16 2 1 12>;
-			interrupt-map-mask = <0xf800 0 0 7>;
-			interrupt-map = <
-				/* IDSEL 0x0 */
-				0000 0 0 1 &mpic 43 1 0 0
-				0000 0 0 2 &mpic 0 1 0 0
-				0000 0 0 3 &mpic 4 1 0 0
-				0000 0 0 4 &mpic 8 1 0 0
 				>;
 		};
 	};

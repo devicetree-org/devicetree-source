@@ -1,7 +1,7 @@
 /*
- * P3041DS Device Tree Source
+ * P2041RDB Device Tree Source
  *
- * Copyright 2010-2011 Freescale Semiconductor Inc.
+ * Copyright 2011 Freescale Semiconductor Inc.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -32,11 +32,11 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/include/ "p3041si.dtsi"
+/include/ "p2041si.dtsi"
 
 / {
-	model = "fsl,P3041DS";
-	compatible = "fsl,P3041DS";
+	model = "fsl,P2041RDB";
+	compatible = "fsl,P2041RDB";
 	#address-cells = <2>;
 	#size-cells = <2>;
 	interrupt-parent = <&mpic>;
@@ -79,80 +79,42 @@
 			};
 		};
 
-		i2c@118100 {
-			eeprom@51 {
-				compatible = "at24,24c256";
-				reg = <0x51>;
+		i2c@118000 {
+			lm75b@48 {
+				compatible = "nxp,lm75a";
+				reg = <0x48>;
 			};
-			eeprom@52 {
+			eeprom@50 {
 				compatible = "at24,24c256";
-				reg = <0x52>;
+				reg = <0x50>;
+			};
+			rtc@68 {
+				compatible = "pericom,pt7c4338";
+				reg = <0x68>;
 			};
 		};
 
-		i2c@119100 {
-			rtc@68 {
-				compatible = "dallas,ds3232";
-				reg = <0x68>;
-				interrupts = <0x1 0x1 0 0>;
+		i2c@118100 {
+			eeprom@50 {
+				compatible = "at24,24c256";
+				reg = <0x50>;
 			};
+		};
+
+		usb1: usb@211000 {
+			dr_mode = "host";
 		};
 	};
 
 	localbus@ffe124000 {
 		reg = <0xf 0xfe124000 0 0x1000>;
-		ranges = <0 0 0xf 0xe8000000 0x08000000
-			  2 0 0xf 0xffa00000 0x00040000
-			  3 0 0xf 0xffdf0000 0x00008000>;
+		ranges = <0 0 0xf 0xe8000000 0x08000000>;
 
 		flash@0,0 {
 			compatible = "cfi-flash";
 			reg = <0 0 0x08000000>;
 			bank-width = <2>;
 			device-width = <2>;
-		};
-
-		nand@2,0 {
-			#address-cells = <1>;
-			#size-cells = <1>;
-			compatible = "fsl,elbc-fcm-nand";
-			reg = <0x2 0x0 0x40000>;
-
-			partition@0 {
-				label = "NAND U-Boot Image";
-				reg = <0x0 0x02000000>;
-				read-only;
-			};
-
-			partition@2000000 {
-				label = "NAND Root File System";
-				reg = <0x02000000 0x10000000>;
-			};
-
-			partition@12000000 {
-				label = "NAND Compressed RFS Image";
-				reg = <0x12000000 0x08000000>;
-			};
-
-			partition@1a000000 {
-				label = "NAND Linux Kernel Image";
-				reg = <0x1a000000 0x04000000>;
-			};
-
-			partition@1e000000 {
-				label = "NAND DTB Image";
-				reg = <0x1e000000 0x01000000>;
-			};
-
-			partition@1f000000 {
-				label = "NAND Writable User area";
-				reg = <0x1f000000 0x21000000>;
-			};
-		};
-
-		board-control@3,0 {
-			compatible = "fsl,p3041ds-fpga", "fsl,fpga-ngpixis";
-			reg = <3 0 0x30>;
 		};
 	};
 
@@ -190,21 +152,6 @@
 		reg = <0xf 0xfe202000 0 0x1000>;
 		ranges = <0x02000000 0 0xe0000000 0xc 0x40000000 0 0x20000000
 			  0x01000000 0 0x00000000 0xf 0xf8020000 0 0x00010000>;
-		pcie@0 {
-			ranges = <0x02000000 0 0xe0000000
-				  0x02000000 0 0xe0000000
-				  0 0x20000000
-
-				  0x01000000 0 0x00000000
-				  0x01000000 0 0x00000000
-				  0 0x00010000>;
-		};
-	};
-
-	pci3: pcie@ffe203000 {
-		reg = <0xf 0xfe203000 0 0x1000>;
-		ranges = <0x02000000 0 0xe0000000 0xc 0x60000000 0 0x20000000
-			  0x01000000 0 0x00000000 0xf 0xf8030000 0 0x00010000>;
 		pcie@0 {
 			ranges = <0x02000000 0 0xe0000000
 				  0x02000000 0 0xe0000000
