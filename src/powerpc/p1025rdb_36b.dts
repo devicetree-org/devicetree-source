@@ -1,5 +1,5 @@
 /*
- * QorIQ MPIC device tree stub [ controller @ offset 0x40000 ]
+ * P1025 RDB Device Tree Source (36-bit address map)
  *
  * Copyright 2011 Freescale Semiconductor Inc.
  *
@@ -32,75 +32,57 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-mpic: pic@40000 {
-	interrupt-controller;
-	#address-cells = <0>;
-	#interrupt-cells = <4>;
-	reg = <0x40000 0x40000>;
-	compatible = "fsl,mpic", "chrp,open-pic";
-	device_type = "open-pic";
-	clock-frequency = <0x0>;
+/include/ "fsl/p1021si-pre.dtsi"
+/ {
+	model = "fsl,P1025RDB";
+	compatible = "fsl,P1025RDB";
+
+	memory {
+		device_type = "memory";
+	};
+
+	lbc: localbus@fffe05000 {
+		reg = <0xf 0xffe05000 0 0x1000>;
+
+		/* NOR, NAND Flashes */
+		ranges = <0x0 0x0 0xf 0xef000000 0x01000000
+			  0x1 0x0 0xf 0xff800000 0x00040000>;
+	};
+
+	soc: soc@fffe00000 {
+		ranges = <0x0 0xf 0xffe00000 0x100000>;
+	};
+
+	pci0: pcie@fffe09000 {
+		reg = <0xf 0xffe09000 0 0x1000>;
+		ranges = <0x2000000 0x0 0xe0000000 0xe 0x20000000 0x0 0x20000000
+			  0x1000000 0x0 0x00000000 0xf 0xffc10000 0x0 0x10000>;
+		pcie@0 {
+			ranges = <0x2000000 0x0 0xe0000000
+				  0x2000000 0x0 0xe0000000
+				  0x0 0x20000000
+
+				  0x1000000 0x0 0x0
+				  0x1000000 0x0 0x0
+				  0x0 0x100000>;
+		};
+	};
+
+	pci1: pcie@fffe0a000 {
+		reg = <0xf 0xffe0a000 0 0x1000>;
+		ranges = <0x2000000 0x0 0xe0000000 0xc 0x00000000 0x0 0x20000000
+			  0x1000000 0x0 0x00000000 0xf 0xffc00000 0x0 0x10000>;
+		pcie@0 {
+			ranges = <0x2000000 0x0 0xe0000000
+				  0x2000000 0x0 0xe0000000
+				  0x0 0x20000000
+
+				  0x1000000 0x0 0x0
+				  0x1000000 0x0 0x0
+				  0x0 0x100000>;
+		};
+	};
 };
 
-timer@41100 {
-	compatible = "fsl,mpic-global-timer";
-	reg = <0x41100 0x100 0x41300 4>;
-	interrupts = <0 0 3 0
-		      1 0 3 0
-		      2 0 3 0
-		      3 0 3 0>;
-};
-
-msi0: msi@41600 {
-	compatible = "fsl,mpic-msi";
-	reg = <0x41600 0x200 0x44140 4>;
-	msi-available-ranges = <0 0x100>;
-	interrupts = <
-		0xe0 0 0 0
-		0xe1 0 0 0
-		0xe2 0 0 0
-		0xe3 0 0 0
-		0xe4 0 0 0
-		0xe5 0 0 0
-		0xe6 0 0 0
-		0xe7 0 0 0>;
-};
-
-msi1: msi@41800 {
-	compatible = "fsl,mpic-msi";
-	reg = <0x41800 0x200 0x45140 4>;
-	msi-available-ranges = <0 0x100>;
-	interrupts = <
-		0xe8 0 0 0
-		0xe9 0 0 0
-		0xea 0 0 0
-		0xeb 0 0 0
-		0xec 0 0 0
-		0xed 0 0 0
-		0xee 0 0 0
-		0xef 0 0 0>;
-};
-
-msi2: msi@41a00 {
-	compatible = "fsl,mpic-msi";
-	reg = <0x41a00 0x200 0x46140 4>;
-	msi-available-ranges = <0 0x100>;
-	interrupts = <
-		0xf0 0 0 0
-		0xf1 0 0 0
-		0xf2 0 0 0
-		0xf3 0 0 0
-		0xf4 0 0 0
-		0xf5 0 0 0
-		0xf6 0 0 0
-		0xf7 0 0 0>;
-};
-
-timer@42100 {
-	compatible = "fsl,mpic-global-timer";
-	reg = <0x42100 0x100 0x42300 4>;
-	interrupts = <4 0 3 0
-		      5 0 3 0
-		      6 0 3 0
-		      7 0 3 0>;
-};
+/include/ "p1025rdb.dtsi"
+/include/ "fsl/p1021si-post.dtsi"
