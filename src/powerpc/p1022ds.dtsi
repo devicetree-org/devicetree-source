@@ -1,7 +1,7 @@
 /*
- * MPC8536DS Device Tree Source stub (no addresses or top-level ranges)
+ * P1022 DS Device Tree Source stub (no addresses or top-level ranges)
  *
- * Copyright 2011 Freescale Semiconductor Inc.
+ * Copyright 2012 Freescale Semiconductor Inc.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
  * Foundation, either version 2 of that License or (at your option) any
  * later version.
  *
- * THIS SOFTWARE IS PROVIDED BY Freescale Semiconductor ``AS IS'' AND ANY
+ * THIS SOFTWARE IS PROVIDED BY Freescale Semiconductor "AS IS" AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL Freescale Semiconductor BE LIABLE FOR ANY
@@ -32,7 +32,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-&lbc {
+&board_lbc {
+	/*
+	 * This node is used to access the pixis via "indirect" mode,
+	 * which is done by writing the pixis register index to chip
+	 * select 0 and the value to/from chip select 1.  Indirect
+	 * mode is the only way to access the pixis when DIU video
+	 * is enabled.  Note that this assumes that the first column
+	 * of the 'ranges' property above is the chip select number.
+	 */
+	board-control@0,0 {
+		compatible = "fsl,p1022ds-indirect-pixis";
+		reg = <0x0 0x0 1	/* CS0 */
+		       0x1 0x0 1>;	/* CS1 */
+		interrupt-parent = <&mpic>;
+		interrupts = <8 0 0 0>;
+	};
+
 	nor@0,0 {
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -44,6 +60,7 @@
 		partition@0 {
 			reg = <0x0 0x03000000>;
 			label = "ramdisk-nor";
+			read-only;
 		};
 
 		partition@3000000 {
@@ -61,16 +78,18 @@
 		partition@4000000 {
 			reg = <0x04000000 0x00400000>;
 			label = "kernel-nor";
+			read-only;
 		};
 
 		partition@4400000 {
 			reg = <0x04400000 0x03b00000>;
-			label = "fs-nor";
+			label = "jffs2-nor";
 		};
 
 		partition@7f00000 {
 			reg = <0x07f00000 0x00080000>;
 			label = "dtb-nor";
+			read-only;
 		};
 
 		partition@7f80000 {
@@ -83,8 +102,7 @@
 	nand@2,0 {
 		#address-cells = <1>;
 		#size-cells = <1>;
-		compatible = "fsl,mpc8536-fcm-nand",
-			     "fsl,elbc-fcm-nand";
+		compatible = "fsl,elbc-fcm-nand";
 		reg = <0x2 0x0 0x40000>;
 
 		partition@0 {
@@ -95,42 +113,53 @@
 
 		partition@2000000 {
 			reg = <0x02000000 0x10000000>;
-			label = "fs-nand";
+			label = "jffs2-nand";
 		};
 
 		partition@12000000 {
-			reg = <0x12000000 0x08000000>;
+			reg = <0x12000000 0x10000000>;
 			label = "ramdisk-nand";
+			read-only;
 		};
 
-		partition@1a000000 {
-			reg = <0x1a000000 0x04000000>;
+		partition@22000000 {
+			reg = <0x22000000 0x04000000>;
 			label = "kernel-nand";
 		};
 
-		partition@1e000000 {
-			reg = <0x1e000000 0x01000000>;
+		partition@26000000 {
+			reg = <0x26000000 0x01000000>;
 			label = "dtb-nand";
+			read-only;
 		};
 
-		partition@1f000000 {
-			reg = <0x1f000000 0x21000000>;
-			label = "empty-nand";
+		partition@27000000 {
+			reg = <0x27000000 0x19000000>;
+			label = "reserved-nand";
 		};
 	};
 
 	board-control@3,0 {
-		compatible = "fsl,mpc8536ds-fpga-pixis";
-		reg = <0x3 0x0 0x8000>;
+		compatible = "fsl,p1022ds-fpga", "fsl,fpga-ngpixis";
+		reg = <3 0 0x30>;
+		interrupt-parent = <&mpic>;
+		/*
+		 * IRQ8 is generated if the "EVENT" switch is pressed
+		 * and PX_CTL[EVESEL] is set to 00.
+		 */
+		interrupts = <8 0 0 0>;
 	};
 };
 
 &board_soc {
 	i2c@3100 {
-		rtc@68 {
-			compatible = "dallas,ds3232";
-			reg = <0x68>;
-			interrupts = <0 0x1 0 0>;
+		wm8776:codec@1a {
+			compatible = "wlf,wm8776";
+			reg = <0x1a>;
+			/*
+			 * clock-frequency will be set by U-Boot if
+			 * the clock is enabled.
+			 */
 		};
 	};
 
@@ -140,42 +169,34 @@
 			#size-cells = <1>;
 			compatible = "spansion,s25sl12801";
 			reg = <0>;
-			spi-max-frequency = <40000000>;
-			partition@u-boot {
-				label = "u-boot";
+			spi-max-frequency = <40000000>; /* input clock */
+
+			partition@0 {
+				label = "u-boot-spi";
 				reg = <0x00000000 0x00100000>;
 				read-only;
 			};
-			partition@kernel {
-				label = "kernel";
+			partition@100000 {
+				label = "kernel-spi";
 				reg = <0x00100000 0x00500000>;
 				read-only;
 			};
-			partition@dtb {
-				label = "dtb";
+			partition@600000 {
+				label = "dtb-spi";
 				reg = <0x00600000 0x00100000>;
 				read-only;
 			};
-			partition@fs {
-				label = "file system";
+			partition@700000 {
+				label = "file system-spi";
 				reg = <0x00700000 0x00900000>;
 			};
 		};
-		flash@1 {
-			compatible = "spansion,s25sl12801";
-			reg = <1>;
-			spi-max-frequency = <40000000>;
-		};
-		flash@2 {
-			compatible = "spansion,s25sl12801";
-			reg = <2>;
-			spi-max-frequency = <40000000>;
-		};
-		flash@3 {
-			compatible = "spansion,s25sl12801";
-			reg = <3>;
-			spi-max-frequency = <40000000>;
-		};
+	};
+
+	ssi@15000 {
+		fsl,mode = "i2s-slave";
+		codec-handle = <&wm8776>;
+		fsl,ssi-asynchronous;
 	};
 
 	usb@22000 {
@@ -183,52 +204,31 @@
 	};
 
 	usb@23000 {
-		phy_type = "ulpi";
+		status = "disabled";
 	};
 
-	enet0: ethernet@24000 {
-		tbi-handle = <&tbi0>;
-		phy-handle = <&phy1>;
-		phy-connection-type = "rgmii-id";
-	};
-
-	mdio@24520 {
+	mdio@24000 {
 		phy0: ethernet-phy@0 {
-			interrupts = <10 0x1 0 0>;
-			reg = <0>;
-			device_type = "ethernet-phy";
+			interrupts = <3 1 0 0>;
+			reg = <0x1>;
 		};
 		phy1: ethernet-phy@1 {
-			interrupts = <10 0x1 0 0>;
-			reg = <1>;
-			device_type = "ethernet-phy";
+			interrupts = <9 1 0 0>;
+			reg = <0x2>;
 		};
-		tbi0: tbi-phy@11 {
-			reg = <0x11>;
+		tbi-phy@2 {
 			device_type = "tbi-phy";
+			reg = <0x2>;
 		};
 	};
 
-	enet2: ethernet@26000 {
-		tbi-handle = <&tbi1>;
+	ethernet@b0000 {
 		phy-handle = <&phy0>;
 		phy-connection-type = "rgmii-id";
 	};
 
-	mdio@26520 {
-		#address-cells = <1>;
-		#size-cells = <0>;
-		compatible = "fsl,gianfar-tbi";
-		reg = <0x26520 0x20>;
-
-		tbi1: tbi-phy@11 {
-			reg = <0x11>;
-			device_type = "tbi-phy";
-		};
-	};
-
-	usb@2b000 {
-		dr_mode = "peripheral";
-		phy_type = "ulpi";
+	ethernet@b1000 {
+		phy-handle = <&phy1>;
+		phy-connection-type = "rgmii-id";
 	};
 };
