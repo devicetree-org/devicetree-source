@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright (C) 2011 Ilya Yanok, EmCraft Systems
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -10,11 +10,18 @@
 /include/ "omap3.dtsi"
 
 / {
-	model = "TI OMAP3 BeagleBoard";
-	compatible = "ti,omap3-beagle", "ti,omap3";
+	model = "TeeJet Mt.Ventoux";
+	compatible = "teejet,mt_ventoux", "ti,omap3";
 
 	memory {
 		device_type = "memory";
-		reg = <0x80000000 0x20000000>; /* 512 MB */
+		reg = <0x80000000 0x10000000>; /* 256 MB */
+	};
+
+	/* AM35xx doesn't have IVA */
+	soc {
+		iva {
+			status = "disabled";
+		};
 	};
 };
