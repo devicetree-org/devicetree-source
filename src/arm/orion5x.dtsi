@@ -1,25 +1,29 @@
+/*
+ * Copyright (C) 2012 Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+ *
+ * This file is licensed under the terms of the GNU General Public
+ * License version 2. This program is licensed "as is" without any
+ * warranty of any kind, whether express or implied.
+ */
+
 /include/ "skeleton.dtsi"
 
 / {
-	compatible = "marvell,kirkwood";
+	model = "Marvell Orion5x SoC";
+	compatible = "marvell,orion5x";
 	interrupt-parent = <&intc>;
 
-	aliases {
-	       gpio0 = &gpio0;
-	       gpio1 = &gpio1;
-	};
 	intc: interrupt-controller {
 		compatible = "marvell,orion-intc", "marvell,intc";
 		interrupt-controller;
 		#interrupt-cells = <1>;
-		reg = <0xf1020204 0x04>,
-		      <0xf1020214 0x04>;
+		reg = <0xf1020204 0x04>;
 	};
 
 	ocp@f1000000 {
 		compatible = "simple-bus";
 		ranges = <0x00000000 0xf1000000 0x4000000
-		          0xf5000000 0xf5000000 0x0000400>;
+		          0xf2200000 0xf2200000 0x0000800>;
 		#address-cells = <1>;
 		#size-cells = <1>;
 
@@ -28,26 +32,15 @@
 			#gpio-cells = <2>;
 			gpio-controller;
 			reg = <0x10100 0x40>;
-			ngpios = <32>;
-			interrupt-controller;
-			interrupts = <35>, <36>, <37>, <38>;
-		};
-
-		gpio1: gpio@10140 {
-			compatible = "marvell,orion-gpio";
-			#gpio-cells = <2>;
-			gpio-controller;
-			reg = <0x10140 0x40>;
-			ngpios = <18>;
-			interrupt-controller;
-			interrupts = <39>, <40>, <41>;
+			ngpio = <32>;
+			interrupts = <6>, <7>, <8>, <9>;
 		};
 
 		serial@12000 {
 			compatible = "ns16550a";
 			reg = <0x12000 0x100>;
 			reg-shift = <2>;
-			interrupts = <33>;
+			interrupts = <3>;
 			/* set clock-frequency in board dts */
 			status = "disabled";
 		};
@@ -56,15 +49,9 @@
 			compatible = "ns16550a";
 			reg = <0x12100 0x100>;
 			reg-shift = <2>;
-			interrupts = <34>;
+			interrupts = <4>;
 			/* set clock-frequency in board dts */
 			status = "disabled";
-		};
-
-		rtc@10300 {
-			compatible = "marvell,kirkwood-rtc", "marvell,orion-rtc";
-			reg = <0x10300 0x20>;
-			interrupts = <53>;
 		};
 
 		spi@10600 {
@@ -72,7 +59,6 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			cell-index = <0>;
-			interrupts = <23>;
 			reg = <0x10600 0x28>;
 			status = "disabled";
 		};
@@ -83,30 +69,10 @@
 			status = "okay";
 		};
 
-		ehci@50000 {
-			compatible = "marvell,orion-ehci";
-			reg = <0x50000 0x1000>;
-			interrupts = <19>;
-			status = "okay";
-		};
-
 		sata@80000 {
 			compatible = "marvell,orion-sata";
 			reg = <0x80000 0x5000>;
-			interrupts = <21>;
-			status = "disabled";
-		};
-
-		nand@3000000 {
-			#address-cells = <1>;
-			#size-cells = <1>;
-			cle = <0>;
-			ale = <1>;
-			bank-width = <1>;
-			compatible = "marvell,orion-nand";
-			reg = <0x3000000 0x400>;
-			chip-delay = <25>;
-			/* set partition map and/or chip-delay in board dts */
+			interrupts = <29>;
 			status = "disabled";
 		};
 
@@ -115,15 +81,15 @@
 			reg = <0x11000 0x20>;
 			#address-cells = <1>;
 			#size-cells = <0>;
-			interrupts = <29>;
+			interrupts = <5>;
 			clock-frequency = <100000>;
 			status = "disabled";
 		};
 
-		crypto@30000 {
+		crypto@90000 {
 			compatible = "marvell,orion-crypto";
-			reg = <0x30000 0x10000>,
-			      <0xf5000000 0x800>;
+			reg = <0x90000 0x10000>,
+			      <0xf2200000 0x800>;
 			reg-names = "regs", "sram";
 			interrupts = <22>;
 			status = "okay";
