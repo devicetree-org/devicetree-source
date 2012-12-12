@@ -1,5 +1,7 @@
 /*
- * Copyright 2012 Sascha Hauer, Pengutronix
+ * Copyright 2012 Maxime Ripard
+ *
+ * Maxime Ripard <maxime.ripard@free-electrons.com>
  *
  * The code contained herein is licensed under the GNU General Public
  * License. You may obtain a copy of the GNU General Public License
@@ -10,28 +12,19 @@
  */
 
 /dts-v1/;
-/include/ "imx27.dtsi"
+/include/ "sun5i.dtsi"
 
 / {
-	model = "mx27_3ds";
-	compatible = "freescale,imx27-3ds", "fsl,imx27";
+	model = "Olimex A13-Olinuxino";
+	compatible = "olimex,a13-olinuxino", "allwinner,sun5i";
 
-	memory {
-		reg = <0x0 0x0>;
+	chosen {
+		bootargs = "earlyprintk console=ttyS0,115200";
 	};
 
 	soc {
-		aipi@10000000 { /* aipi */
-
-			uart1: serial@1000a000 {
-				fsl,uart-has-rtscts;
-				status = "okay";
-			};
-
-			fec@1002b000 {
-				status = "okay";
-			};
+		uart1: uart@01c28400 {
+			status = "okay";
 		};
 	};
-
 };
