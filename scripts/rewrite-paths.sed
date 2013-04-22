@@ -13,18 +13,18 @@ s,\tarch/microblaze/platform/generic/\(system.dts\)$,\tarch/microblaze/boot/dts/
 # arch/mips/netlogic/dts/xlp_evp.dts
 # arch/mips/ralink/dts/rt3050.dtsi
 # arch/mips/ralink/dts/rt3052_eval.dts
-s,\tarch/mips/\([^/]*\)/dts/\(.*\.dtsi\?\)$,\tarch/mips/boot/dts/\2,g
+s,\tarch/mips/\([^/]*\)/dts/\(.*\.dts.\?\)$,\tarch/mips/boot/dts/\2,g
 
 # arch/mips/cavium-octeon/octeon_68xx.dts
 # arch/mips/cavium-octeon/octeon_3xxx.dts
 # arch/mips/mti-sead3/sead3.dts
-s,\tarch/mips/\([^/]*\)/\([^/]*\.dtsi\?\)$,\tarch/mips/boot/dts/\2,g
+s,\tarch/mips/\([^/]*\)/\([^/]*\.dts.\?\)$,\tarch/mips/boot/dts/\2,g
 
 # arch/x86/platform/ce4100/falconfalls.dts
 s,\tarch/x86/platform/ce4100/falconfalls.dts,\tarch/x86/boot/dts/falconfalls.dts,g
 
 # Now rewrite generic DTS path
-s,\tarch/\([^/]*\)/boot/dts/\(.*\.dtsi\?\)$,\tsrc/\1/\2,gp
+s,\tarch/\([^/]*\)/boot/dts/\(.*\.dts.\?\)$,\tsrc/\1/\2,gp
 
 # Also rewrite the DTS include path for dtc+cpp support
 s,\tarch/\([^/]*\)/include/dts/,\tsrc/\1/include/,gp
