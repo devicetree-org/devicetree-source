@@ -1,13 +1,13 @@
 /dts-v1/;
 
-#include "rt3050.dtsi"
+/include/ "rt2880.dtsi"
 
 / {
-	compatible = "ralink,rt3052-eval-board", "ralink,rt3052-soc";
-	model = "Ralink RT3052 evaluation board";
+	compatible = "ralink,rt2880-eval-board", "ralink,rt2880-soc";
+	model = "Ralink RT2880 evaluation board";
 
 	memory@0 {
-		reg = <0x0 0x2000000>;
+		reg = <0x8000000 0x2000000>;
 	};
 
 	chosen {
@@ -16,7 +16,7 @@
 
 	cfi@1f000000 {
 		compatible = "cfi-flash";
-		reg = <0x1f000000 0x800000>;
+		reg = <0x1f000000 0x400000>;
 
 		bank-width = <2>;
 		device-width = <2>;
@@ -40,7 +40,7 @@
 		};
 		partition@50000 {
 			label = "linux";
-			reg = <0x50000 0x7b0000>;
+			reg = <0x50000 0x3b0000>;
 		};
 	};
 };
