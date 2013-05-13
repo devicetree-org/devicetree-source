@@ -1,0 +1,62 @@
+#!/bin/bash
+
+set -e
+
+cd $(dirname $0)/..
+
+UPSTREAM_GIT="git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
+
+if [ ! -f scripts/filter.sh ] ; then
+    echo "`pwd`: does not appear to be a device-tree.git" 1>&2
+    exit 1
+fi
+
+if [ -z "$LATEST_VERSION" ] ; then
+    FINGER_BANNER="https://www.kernel.org/finger_banner"
+    LATEST_VERSION=$(wget --quiet -O - "$FINGER_BANNER" |\
+        sed -n -e 's/^The latest mainline 3 version of the Linux kernel is:\s*\(.*\)$/\1/p')
+fi
+
+if [ -z "$LATEST_VERSION" ] ; then
+    echo "Unable to determine latest version" 1>&2
+    exit 1
+fi
+
+echo "Latest Version: v$LATEST_VERSION"
+if ! git show-ref --quiet --verify v${LATEST_VERSION} ; then
+    NEW_DTS_TAG="v${LATEST_VERSION}-dts"
+    echo "Latest version is new, DTS tag: $NEW_DTS_TAG"
+fi
+echo
+
+echo "Current State:"
+for branch in master filter-state upstream/master upstream/dts ; do
+    REF=$(git show-ref --verify refs/heads/${branch})
+    if [ $? -ne 0 ] ; then
+	echo "Tree is missing required branch ${branch}, aborting" 1>&2
+	exit 1
+    fi
+    echo "  ${REF}"
+done
+echo
+
+echo "Fetching $UPSTREAM_GIT master"
+git fetch --tags "$UPSTREAM_GIT" master
+echo
+
+echo "Filtering"
+./scripts/filter.sh
+echo
+
+#git push --dry-run origin filter-state upstream/dts upstream/master
+#git push --dry-run origin --tags
+#echo
+
+if [ -n "$NEW_DTS_TAG" ] ; then
+    echo "Merging $NEW_DTS_TAG into master"
+    git checkout master
+    git merge --no-edit "$NEW_DTS_TAG"
+    #git push --dry-run origin master:master
+fi
+
+exit 0
