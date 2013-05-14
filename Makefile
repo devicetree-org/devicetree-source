@@ -2,6 +2,8 @@
 DTC ?= dtc
 CPP ?= cpp
 
+MAKEFLAGS += -rR --no-print-directory
+
 ALL_ARCHES := $(patsubst src/%,%,$(wildcard src/*))
 
 PHONY += all
@@ -79,7 +81,7 @@ ALL_DTS		:= $(wildcard src/*/*.dts)
 ALL_DTB		:= $(patsubst %.dts,%.dtb,$(ALL_DTS))
 
 $(ALL_DTB): ARCH=$(word 2,$(subst /, ,$@))
-$(ALL_DTB):
+$(ALL_DTB): FORCE
 	$(Q)$(MAKE) ARCH=$(ARCH) $@
 
 else
@@ -92,6 +94,12 @@ src	:= src/$(ARCH)
 obj	:= src/$(ARCH)
 
 include scripts/Kbuild.include
+
+cmd_files := $(wildcard $(foreach f,$(ARCH_DTB),$(dir $(f)).$(notdir $(f)).cmd))
+
+ifneq ($(cmd_files),)
+  include $(cmd_files)
+endif
 
 quiet_cmd_clean    = CLEAN   $(obj)
       cmd_clean    = rm -f $(__clean-files)
@@ -115,6 +123,7 @@ $(obj)/%.dtb: $(src)/%.dts FORCE
 
 PHONY += all_arch
 all_arch: $(ARCH_DTB)
+	@:
 
 PHONY += clean_arch
 clean_arch: __clean_files = $(ARCH_DTB)
