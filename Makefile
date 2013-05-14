@@ -126,7 +126,7 @@ all_arch: $(ARCH_DTB)
 	@:
 
 PHONY += clean_arch
-clean_arch: __clean_files = $(ARCH_DTB)
+clean_arch: __clean-files = $(ARCH_DTB)
 clean_arch: FORCE
 	$(call cmd,clean)
 
