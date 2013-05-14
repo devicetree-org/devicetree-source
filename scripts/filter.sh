@@ -9,7 +9,7 @@ export SCRIPTS=$(dirname $(readlink -f $0))
 UPSTREAM_MASTER=upstream/master
 UPSTREAM_REWRITTEN=upstream/dts
 
-LAST=$(git show-ref -s $UPSTREAM_MASTER||true)
+LAST=$(git show-ref -s refs/heads/$UPSTREAM_MASTER||true)
 if [ -n "$LAST" ] ; then
     RANGE="$LAST..$UPSTREAM_REWRITTEN"
 else
