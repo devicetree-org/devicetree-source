@@ -23,8 +23,10 @@ s,\tarch/mips/\([^/]*\)/\([^/]*\.dts.\?\)$,\tarch/mips/boot/dts/\2,g
 # arch/x86/platform/ce4100/falconfalls.dts
 s,\tarch/x86/platform/ce4100/falconfalls.dts,\tarch/x86/boot/dts/falconfalls.dts,g
 
-# Now rewrite generic DTS path
+# Now rewrite generic DTS paths
 s,\tarch/\([^/]*\)/boot/dts/\(.*\.dts.\?\)$,\tsrc/\1/\2,gp
+s,\tarch/\([^/]*\)/boot/dts/\(.*\.h\)$,\tsrc/\1/\2,gp
 
-# Also rewrite the DTS include path for dtc+cpp support
+# Also rewrite the DTS include paths for dtc+cpp support
 s,\tarch/\([^/]*\)/include/dts/,\tsrc/\1/include/,gp
+s,\tinclude/dt-bindings/,\tinclude/dt-bindings/,gp
