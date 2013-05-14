@@ -1,5 +1,6 @@
 
 DTC ?= dtc
+CPP ?= cpp
 
 ALL_ARCHES := $(patsubst src/%,%,$(wildcard src/*))
 
@@ -74,9 +75,8 @@ clean_%:
 ifeq ($(ARCH),)
 
 ALL_DTS		:= $(wildcard src/*/*.dts)
-ALL_DTSP	:= $(wildcard src/*/*.dtsp)
 
-ALL_DTB		:= $(patsubst %.dts,%.dtb,$(ALL_DTS)) $(patsubst %.dtsp,%.dtb,$(ALL_DTSP))
+ALL_DTB		:= $(patsubst %.dts,%.dtb,$(ALL_DTS))
 
 $(ALL_DTB): ARCH=$(word 2,$(subst /, ,$@))
 $(ALL_DTB):
@@ -85,9 +85,8 @@ $(ALL_DTB):
 else
 
 ARCH_DTS	:= $(wildcard src/$(ARCH)/*.dts)
-ARCH_DTSP	:= $(wildcard src/$(ARCH)/*.dtsp)
 
-ARCH_DTB	:= $(patsubst %.dts,%.dtb,$(ARCH_DTS)) $(patsubst %.dtsp,%.dtb,$(ARCH_DTSP))
+ARCH_DTB	:= $(patsubst %.dts,%.dtb,$(ARCH_DTS))
 
 src	:= src/$(ARCH)
 obj	:= src/$(ARCH)
@@ -97,20 +96,22 @@ include scripts/Kbuild.include
 quiet_cmd_clean    = CLEAN   $(obj)
       cmd_clean    = rm -f $(__clean-files)
 
+dtc-tmp = $(subst $(comma),_,$(dot-target).dts)
+
+dtc_cpp_flags  = -Wp,-MD,$(depfile).pre -nostdinc	\
+                 -I$(src)/boot/dts		\
+                 -I$(src)/boot/dts/include	\
+                 -undef -D__DTS__
+
 quiet_cmd_dtc = DTC     $@
-cmd_dtc = $(DTC) -O dtb -o $@ -b 0 $(DTC_FLAGS) -d $(depfile) $<
+cmd_dtc = $(CPP) $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
+        $(DTC) -O dtb -o $@ -b 0 \
+                -i $(src)/$(ARCH)/boot/dts $(DTC_FLAGS) \
+                -d $(depfile).dtc $(dtc-tmp) ; \
+        cat $(depfile).pre $(depfile).dtc > $(depfile)
 
 $(obj)/%.dtb: $(src)/%.dts FORCE
 	$(call if_changed_dep,dtc)
-
-dtc-tmp = $(subst $(comma),_,$(dot-target).dts)
-
-quiet_cmd_dtc_cpp = DTC+CPP $@
-cmd_dtc_cpp = $(CPP) $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
-	$(DTC) -O dtb -o $@ -b 0 $(DTC_FLAGS) $(dtc-tmp)
-
-$(obj)/%.dtb: $(src)/%.dtsp FORCE
-	$(call if_changed_dep,dtc_cpp)
 
 PHONY += all_arch
 all_arch: $(ARCH_DTB)
