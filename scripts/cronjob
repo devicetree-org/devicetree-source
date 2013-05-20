@@ -6,6 +6,8 @@ cd $(dirname $0)/..
 
 UPSTREAM_GIT="git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
 
+BRANCHES="master filter-state upstream/master upstream/dts"
+
 if [ ! -f scripts/filter.sh ] ; then
     echo "`pwd`: does not appear to be a device-tree.git" 1>&2
     exit 1
@@ -24,13 +26,12 @@ fi
 
 echo "Latest Version: v$LATEST_VERSION"
 if ! git show-ref --quiet --verify v${LATEST_VERSION} ; then
-    NEW_DTS_TAG="v${LATEST_VERSION}-dts"
-    echo "Latest version is new, DTS tag: $NEW_DTS_TAG"
+    echo "Latest version is new"
 fi
 echo
 
 echo "Current State:"
-for branch in master filter-state upstream/master upstream/dts ; do
+for branch in $BRANCHES ; do
     REF=$(git show-ref --verify refs/heads/${branch})
     if [ $? -ne 0 ] ; then
 	echo "Tree is missing required branch ${branch}, aborting" 1>&2
@@ -52,11 +53,16 @@ echo
 #git push --dry-run origin --tags
 #echo
 
-if [ -n "$NEW_DTS_TAG" ] ; then
-    echo "Merging $NEW_DTS_TAG into master"
-    git checkout master
-    git merge --no-edit "$NEW_DTS_TAG"
-    #git push --dry-run origin master:master
-fi
+#echo "Merging v${LATEST_VERSION}-dts into master"
+#git checkout master
+#git merge --no-edit "v${LATEST_VERSION}-dts"
+##git push --dry-run origin master:master
+
+echo "Final State:"
+for branch in ${BRANCHES} ; do
+    REF=$(git show-ref --verify refs/heads/${branch})
+    echo "  ${REF}"
+done
+echo
 
 exit 0
