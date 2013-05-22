@@ -25,7 +25,7 @@ if [ -z "$LATEST_VERSION" ] ; then
 fi
 
 echo "Latest Version: v$LATEST_VERSION"
-if ! git show-ref --quiet --verify v${LATEST_VERSION} ; then
+if ! git show-ref --quiet --verify refs/tags/v${LATEST_VERSION} ; then
     echo "Latest version is new"
 fi
 echo
