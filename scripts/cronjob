@@ -41,6 +41,9 @@ for branch in $BRANCHES ; do
 done
 echo
 
+echo "Switching to master branch"
+git checkout master
+
 echo "Fetching $UPSTREAM_GIT master"
 git fetch --tags "$UPSTREAM_GIT" master
 echo
