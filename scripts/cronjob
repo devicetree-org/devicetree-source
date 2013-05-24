@@ -53,10 +53,18 @@ echo
 #git push --dry-run origin --tags
 #echo
 
-#echo "Merging v${LATEST_VERSION}-dts into master"
-#git checkout master
-#git merge --no-edit "v${LATEST_VERSION}-dts"
-##git push --dry-run origin master:master
+DATE=$(date +%Y%m%d)
+LATEST=latest-${DATE}
+git checkout -b ${LATEST} origin/master
+git merge --no-edit upstream/dts
+REF=$(git show-ref --verify refs/heads/${LATEST})
+echo "Testing: ${TESTBRANCH}: ${REF}"
+echo
+
+make DTC=/home/ianc/devel/dtc/dtc -k -s || true # This almost always fails...
+echo
+echo "Test complete"
+echo
 
 echo "Final State:"
 for branch in ${BRANCHES} ; do
