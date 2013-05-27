@@ -69,6 +69,9 @@ echo
 echo "Test complete"
 echo
 
+echo "Switching back to master branch"
+git checkout master
+
 echo "Final State:"
 for branch in ${BRANCHES} ; do
     REF=$(git show-ref --verify refs/heads/${branch})
