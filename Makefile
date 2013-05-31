@@ -106,9 +106,9 @@ quiet_cmd_clean    = CLEAN   $(obj)
 
 dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
 
-dtc_cpp_flags  = -Wp,-MD,$(depfile).pre.tmp -nostdinc	\
-                 -I$(src)/boot/dts		\
-                 -I$(src)/boot/dts/include	\
+dtc_cpp_flags  = -Wp,-MD,$(depfile).pre.tmp -nostdinc -P	\
+                 -I$(src)/boot/dts				\
+                 -I$(src)/boot/dts/include			\
                  -undef -D__DTS__
 
 quiet_cmd_dtc = DTC     $@
