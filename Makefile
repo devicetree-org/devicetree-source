@@ -104,9 +104,9 @@ endif
 quiet_cmd_clean    = CLEAN   $(obj)
       cmd_clean    = rm -f $(__clean-files)
 
-dtc-tmp = $(subst $(comma),_,$(dot-target).dts)
+dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
 
-dtc_cpp_flags  = -Wp,-MD,$(depfile).pre -nostdinc	\
+dtc_cpp_flags  = -Wp,-MD,$(depfile).pre.tmp -nostdinc	\
                  -I$(src)/boot/dts		\
                  -I$(src)/boot/dts/include	\
                  -undef -D__DTS__
@@ -115,8 +115,8 @@ quiet_cmd_dtc = DTC     $@
 cmd_dtc = $(CPP) $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
         $(DTC) -O dtb -o $@ -b 0 \
                 -i $(src)/$(ARCH)/boot/dts $(DTC_FLAGS) \
-                -d $(depfile).dtc $(dtc-tmp) ; \
-        cat $(depfile).pre $(depfile).dtc > $(depfile)
+                -d $(depfile).dtc.tmp $(dtc-tmp) ; \
+        cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
 
 $(obj)/%.dtb: $(src)/%.dts FORCE
 	$(call if_changed_dep,dtc)
@@ -125,10 +125,18 @@ PHONY += all_arch
 all_arch: $(ARCH_DTB)
 	@:
 
+RCS_FIND_IGNORE := \( -name SCCS -o -name BitKeeper -o -name .svn -o -name CVS \
+                   -o -name .pc -o -name .hg -o -name .git \) -prune -o
+
 PHONY += clean_arch
 clean_arch: __clean-files = $(ARCH_DTB)
 clean_arch: FORCE
 	$(call cmd,clean)
+	@find . $(RCS_FIND_IGNORE) \
+		\( -name '.*.cmd' \
+		-o -name '.*.d' \
+		-o -name '.*.tmp' \
+		\) -type f -print | xargs rm -f
 
 endif
 
