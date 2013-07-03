@@ -107,14 +107,13 @@ quiet_cmd_clean    = CLEAN   $(obj)
 dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
 
 dtc_cpp_flags  = -Wp,-MD,$(depfile).pre.tmp -nostdinc	\
-                 -I$(src)/boot/dts		\
-                 -I$(src)/boot/dts/include	\
+                 -Iinclude -I$(src)			\
                  -undef -D__DTS__
 
 quiet_cmd_dtc = DTC     $@
 cmd_dtc = $(CPP) $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; \
         $(DTC) -O dtb -o $@ -b 0 \
-                -i $(src)/$(ARCH)/boot/dts $(DTC_FLAGS) \
+                -i $(src) $(DTC_FLAGS) \
                 -d $(depfile).dtc.tmp $(dtc-tmp) ; \
         cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
 
