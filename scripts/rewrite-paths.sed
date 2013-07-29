@@ -30,3 +30,6 @@ s,\tarch/\([^/]*\)/boot/dts/\(.*\.h\)$,\tsrc/\1/\2,gp
 # Also rewrite the DTS include paths for dtc+cpp support
 s,\tarch/\([^/]*\)/include/dts/,\tsrc/\1/include/,gp
 s,\tinclude/dt-bindings/,\tinclude/dt-bindings/,gp
+
+# Rewrite the bindings subdirectory
+s,\tDocumentation/devicetree/bindings/,\tBindings/,gp
