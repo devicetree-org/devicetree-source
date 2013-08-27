@@ -73,6 +73,10 @@ git checkout -b ${LATEST} origin/master
 git merge --no-edit upstream/dts
 REF=$(git show-ref --verify refs/heads/${LATEST})
 echo "Testing: ${TESTBRANCH}: ${REF}"
+if git log ${LATEST} -- MAINTAINERS | grep --quiet . ; then
+    echo "Filter branch has upstream-only content (MAINTAINERS file)"
+    exit 1
+fi
 echo
 
 make DTC=/home/ianc/devel/dtc/dtc -k -s || true # This almost always fails...
