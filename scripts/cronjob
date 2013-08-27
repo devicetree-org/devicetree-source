@@ -41,6 +41,16 @@ for branch in $BRANCHES ; do
 done
 echo
 
+trap '
+if [ -n "$OUTPUT" ] ; then
+    echo "---------------------------------------------------------------------"
+    echo "Filter Output:"
+    echo "---------------------------------------------------------------------"
+    echo "$OUTPUT"
+fi
+' EXIT
+
+OUTPUT=`(
 echo "Switching to master branch"
 git checkout master
 
@@ -51,6 +61,7 @@ echo
 echo "Filtering"
 ./scripts/filter.sh
 echo
+) 2>&1 `
 
 #git push --dry-run origin filter-state upstream/dts upstream/master
 #git push --dry-run origin --tags
