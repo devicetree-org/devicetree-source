@@ -17,6 +17,12 @@ else
     RANGE="$UPSTREAM_REWRITTEN"
 fi
 
+FETCH_HEAD=$(git rev-parse FETCH_HEAD)
+if [ "$LAST" = "$FETCH_HEAD" ] ; then
+	echo "Nothing new in FETCH_HEAD: $FETCH_HEAD"
+	exit 0
+fi
+
 rm -f .git/refs/original/refs/heads/${UPSTREAM_REWRITTEN}
 
 git branch -f $UPSTREAM_REWRITTEN FETCH_HEAD
