@@ -1,5 +1,5 @@
 /*
- * B4860DS Device Tree Source
+ * C293 Silicon/SoC Device Tree Source (pre include)
  *
  * Copyright 2012 Freescale Semiconductor Inc.
  *
@@ -32,30 +32,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/include/ "fsl/b4860si-pre.dtsi"
-/include/ "b4qds.dtsi"
+/dts-v1/;
+
+/include/ "e500v2_power_isa.dtsi"
 
 / {
-	model = "fsl,B4860QDS";
-	compatible = "fsl,B4860QDS";
+	compatible = "fsl,C293";
+	#address-cells = <2>;
+	#size-cells = <2>;
+	interrupt-parent = <&mpic>;
 
-	ifc: localbus@ffe124000 {
-		board-control@3,0 {
-			compatible = "fsl,b4860qds-fpga", "fsl,fpga-qixis";
-		};
+	aliases {
+		serial0 = &serial0;
+		serial1 = &serial1;
+		ethernet0 = &enet0;
+		ethernet1 = &enet1;
+		pci0 = &pci0;
 	};
 
-	rio: rapidio@ffe0c0000 {
-		reg = <0xf 0xfe0c0000 0 0x11000>;
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
 
-		port1 {
-			ranges = <0 0 0xc 0x20000000 0 0x10000000>;
-		};
-		port2 {
-			ranges = <0 0 0xc 0x30000000 0 0x10000000>;
+		PowerPC,e500v2@0 {
+			device_type = "cpu";
+			reg = <0x0>;
+			next-level-cache = <&L2>;
 		};
 	};
-
 };
-
-/include/ "fsl/b4860si-post.dtsi"
