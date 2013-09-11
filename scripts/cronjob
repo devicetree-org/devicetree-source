@@ -42,15 +42,24 @@ done
 echo
 
 trap '
-if [ -n "$OUTPUT" ] ; then
+if [ -n "$FILTER_OUTPUT" ] ; then
     echo "---------------------------------------------------------------------"
     echo "Filter Output:"
     echo "---------------------------------------------------------------------"
-    echo "$OUTPUT"
+    echo "$FILTER_OUTPUT"
+    echo
+fi
+if [ -n "$MERGE_OUTPUT" ] ; then
+    echo "---------------------------------------------------------------------"
+    echo "Merge Output:"
+    echo "---------------------------------------------------------------------"
+    echo "$MERGE_OUTPUT"
+    echo
 fi
 ' EXIT
 
-OUTPUT=`(
+FILTER_OUTPUT=`(
+set -e
 echo "Switching to master branch"
 git checkout master
 
@@ -69,8 +78,11 @@ echo
 
 DATE=$(date +%Y%m%d)
 LATEST=latest-${DATE}
+MERGE_OUTPUT=`(
+set -e
 git checkout -b ${LATEST} origin/master
 git merge --no-edit upstream/dts
+) 2>&1 `
 REF=$(git show-ref --verify refs/heads/${LATEST})
 echo "Testing: ${TESTBRANCH}: ${REF}"
 if git log ${LATEST} -- MAINTAINERS | grep --quiet . ; then
