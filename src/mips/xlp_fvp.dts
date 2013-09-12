@@ -1,10 +1,10 @@
 /*
- * XLP3XX Device Tree Source for SVP boards
+ * XLP2XX Device Tree Source for FVP boards
  */
 
 /dts-v1/;
 / {
-	model = "netlogic,XLP-SVP";
+	model = "netlogic,XLP-FVP";
 	compatible = "netlogic,xlp";
 	#address-cells = <2>;
 	#size-cells = <2>;
@@ -36,22 +36,22 @@
 			interrupt-parent = <&pic>;
 			interrupts = <18>;
 		};
-		i2c0: ocores@32000 {
+		i2c0: ocores@37100 {
 			compatible = "opencores,i2c-ocores";
 			#address-cells = <1>;
 			#size-cells = <0>;
-			reg = <0 0x32100 0xa00>;
+			reg = <0 0x37100 0x20>;
 			reg-shift = <2>;
 			reg-io-width = <4>;
 			clock-frequency = <32000000>;
 			interrupt-parent = <&pic>;
 			interrupts = <30>;
 		};
-		i2c1: ocores@33000 {
+		i2c1: ocores@37120 {
 			compatible = "opencores,i2c-ocores";
 			#address-cells = <1>;
 			#size-cells = <0>;
-			reg = <0 0x33100 0xa00>;
+			reg = <0 0x37120 0x20>;
 			reg-shift = <2>;
 			reg-io-width = <4>;
 			clock-frequency = <32000000>;
