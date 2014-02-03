@@ -92,7 +92,7 @@ fi
 echo
 
 make clean -s
-make DTC=/home/ianc/devel/dtc/dtc -k -s || true # This almost always fails...
+make -k -s || true # This almost always fails...
 echo
 echo "Test complete"
 echo
