@@ -84,17 +84,22 @@ git checkout -b ${LATEST} origin/master
 git merge --no-edit upstream/dts
 ) 2>&1 `
 REF=$(git show-ref --verify refs/heads/${LATEST})
-echo "Testing: ${TESTBRANCH}: ${REF}"
+echo "Testing: ${REF}"
 if git log ${LATEST} -- MAINTAINERS | grep --quiet . ; then
     echo "Filter branch has upstream-only content (MAINTAINERS file)"
     exit 1
 fi
-echo
 
 make clean -s
-make -k -s || true # This almost always fails...
-echo
-echo "Test complete"
+TEST_OUTPUT=`make -k -s 2>&1`
+if [ -z "${TEST_OUTPUT}" ]; then
+    echo "Success!"
+else
+    echo "---------------------------------------------------------------------"
+    echo "Test Output:"
+    echo "---------------------------------------------------------------------"
+    echo "$TEST_OUTPUT"
+fi
 echo
 
 echo "Switching back to master branch"
