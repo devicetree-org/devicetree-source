@@ -91,7 +91,7 @@ if git log ${LATEST} -- MAINTAINERS | grep --quiet . ; then
 fi
 
 make clean -s
-TEST_OUTPUT=`make -k -s 2>&1`
+TEST_OUTPUT=`make -k -s 2>&1 || true`
 if [ -z "${TEST_OUTPUT}" ]; then
     echo "Success!"
 else
