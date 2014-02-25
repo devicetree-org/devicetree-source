@@ -23,6 +23,9 @@ s,\tarch/mips/\([^/]*\)/\([^/]*\.dts.\?\)$,\tarch/mips/boot/dts/\2,g
 # arch/x86/platform/ce4100/falconfalls.dts
 s,\tarch/x86/platform/ce4100/falconfalls.dts,\tarch/x86/boot/dts/falconfalls.dts,g
 
+# test cases
+s,\tdrivers/of/testcase-data/,\ttestcase-data/,gp
+
 # Now rewrite generic DTS paths
 s,\tarch/\([^/]*\)/boot/dts/\(.*\.dts.\?\)$,\tsrc/\1/\2,gp
 s,\tarch/\([^/]*\)/boot/dts/\(.*\.h\)$,\tsrc/\1/\2,gp
