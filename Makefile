@@ -82,7 +82,7 @@ clean_%:
 
 ifeq ($(ARCH),)
 
-ALL_DTS		:= $(wildcard src/*/*.dts)
+ALL_DTS		:= $(shell find src/* -name \*.dts)
 
 ALL_DTB		:= $(patsubst %.dts,%.dtb,$(ALL_DTS))
 
@@ -92,7 +92,7 @@ $(ALL_DTB): FORCE
 
 else
 
-ARCH_DTS	:= $(wildcard src/$(ARCH)/*.dts)
+ARCH_DTS	:= $(shell find src/$(ARCH) -name \*.dts)
 
 ARCH_DTB	:= $(patsubst %.dts,%.dtb,$(ARCH_DTS))
 
