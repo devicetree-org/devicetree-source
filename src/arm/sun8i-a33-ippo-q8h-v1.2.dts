@@ -45,8 +45,8 @@
 #include "sun8i-q8-common.dtsi"
 
 / {
-	model = "Ippo Q8H Quad Core Tablet (v1.2)";
-	compatible = "ippo,a33-q8h-v1.2", "allwinner,sun8i-a33";
+	model = "Q8 A33 Tablet";
+	compatible = "allwinner,q8-a33", "allwinner,sun8i-a33";
 };
 
 /*
