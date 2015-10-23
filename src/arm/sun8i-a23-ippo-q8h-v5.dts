@@ -1,7 +1,5 @@
 /*
- * Copyright 2014 Chen-Yu Tsai
- *
- * Chen-Yu Tsai <wens@csie.org>
+ * Copyright 2015 Hans de Goede <hdegoede@redhat.com>
  *
  * This file is dual-licensed: you can use it either under the terms
  * of the GPL or the X11 license, at your option. Note that this dual
@@ -47,15 +45,8 @@
 #include "sun8i-q8-common.dtsi"
 
 / {
-	model = "Ippo Q8H Dual Core Tablet (v5)";
-	compatible = "ippo,q8h-v5", "allwinner,sun8i-a23";
-};
-
-&i2c2 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&i2c2_pins_a>;
-	/* pull-ups and devices require PMIC regulator */
-	status = "failed";
+	model = "Q8 A23 Tablet";
+	compatible = "allwinner,q8-a23", "allwinner,sun8i-a23";
 };
 
 /*
