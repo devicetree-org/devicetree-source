@@ -1,5 +1,5 @@
 /*
- * Device tree source for D-Link DSR-1000N.
+ * Device tree source for D-Link DSR-500N.
  *
  * Written by: Aaro Koskinen <aaro.koskinen@iki.fi>
  *
@@ -12,38 +12,27 @@
 #include <dt-bindings/gpio/gpio.h>
 
 / {
-	model = "dlink,dsr-1000n";
+	model = "dlink,dsr-500n";
+	compatible = "dlink,dsr-500n", "cavium,octeon-3860";
 
 	soc@0 {
 		uart0: serial@1180000000800 {
-			clock-frequency = <500000000>;
+			clock-frequency = <300000000>;
 		};
 	};
 
 	leds {
 		compatible = "gpio-leds";
 
-		usb1 {
-			label = "usb1";
+		usb {
 			gpios = <&gpio 9 GPIO_ACTIVE_LOW>;
 		};
 
-		usb2 {
-			label = "usb2";
-			gpios = <&gpio 10 GPIO_ACTIVE_LOW>;
-		};
-
 		wps {
-			label = "wps";
 			gpios = <&gpio 11 GPIO_ACTIVE_LOW>;
 		};
 
-		wireless1 {
-			label = "5g";
-			gpios = <&gpio 17 GPIO_ACTIVE_LOW>;
-		};
-
-		wireless2 {
+		wireless {
 			label = "2.4g";
 			gpios = <&gpio 18 GPIO_ACTIVE_LOW>;
 		};
