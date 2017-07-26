@@ -31,6 +31,7 @@ sh $SCRIPTS/git-filter-branch --force \
 	--index-filter ${SCRIPTS}/index-filter.sh \
 	--msg-filter 'cat && /bin/echo -e "\n[ upstream commit: $GIT_COMMIT ]"' \
 	--tag-name-filter 'while read t ; do /bin/echo -n $t-dts-raw ; done' \
+	--parent-filter 'sed "s/-p //g" | xargs -r git show-branch --independent | sed "s/\</-p /g"' \
 	--prune-empty --state-branch refs/heads/filter-state \
 	-- $RANGE
 
