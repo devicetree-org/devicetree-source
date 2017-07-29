@@ -24,7 +24,7 @@ while read mode object stage path ; do
 	    echo -e "$mode $object $stage\t$path"
 	    ;;
 	*)
-	    echo >&2 "Unhandled ls-tree entry: $line"
+	    echo >&2 "Unhandled ls-tree entry: \"$mode $object $stage $path\""
 	    exit 1
 	    ;;
     esac
