@@ -16,16 +16,15 @@ while (<$lsfiles>) {
 	print Wderef "$ENV{GIT_COMMIT}:$path\n" or die "write Wderef: $!";
 	my $deref = <Rderef>;
 	if ($deref =~ m/^deref-ok ([0-9a-f]{40})$/) {
-	    print "100644 $1 $stage\t$path\n"
+	    $_ = "100644 $1 $stage\t$path\n"
 	} elsif ($deref =~ /^dangling /) {
 	    # Skip next line
 	    my $dummy = <Rderef>;
 	} else {
 	    die "Failed to parse symlink $ENV{GIT_COMMIT}:$path $deref";
 	}
-    } else {
-	print;
     }
+    print;
 }
 kill $pid if $pid;
 exit 0;
