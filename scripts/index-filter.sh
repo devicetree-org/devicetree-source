@@ -3,8 +3,7 @@
 set -e
 set -o pipefail
 
-git ls-files -s | \
-	${SCRIPTS}/flatten-symlinks.pl | \
+${SCRIPTS}/flatten-symlinks.pl | \
 	sed -n -f ${SCRIPTS}/rewrite-paths.sed | \
 	GIT_INDEX_FILE=$GIT_INDEX_FILE.new git update-index --index-info
 

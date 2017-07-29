@@ -3,7 +3,10 @@ use strict;
 use warnings;
 use IPC::Open2;
 my $pid;
-while (<>) {
+
+open(my $lsfiles, "-|", "git ls-files -s") or die "fork lsfiles: $!";
+
+while (<$lsfiles>) {
     if ($_ =~ m/^120000 ([0-9a-f]{40}) (.*)\t(.*)/) {
 	my ($obj, $stage, $path) = ($1,$2,$3);
 	if (!defined $pid) {
