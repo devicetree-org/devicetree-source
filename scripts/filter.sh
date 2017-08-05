@@ -27,7 +27,7 @@ rm -f .git/refs/original/refs/heads/${UPSTREAM_REWRITTEN}
 
 git branch -f $UPSTREAM_REWRITTEN FETCH_HEAD
 
-sh $SCRIPTS/git-filter-branch --force \
+PATH=/usr/lib/git-core:$PATH sh $SCRIPTS/git-filter-branch --force \
 	--index-filter ${SCRIPTS}/index-filter.sh \
 	--msg-filter 'cat && /bin/echo -e "\n[ upstream commit: $GIT_COMMIT ]"' \
 	--tag-name-filter 'while read t ; do /bin/echo -n $t-dts-raw ; done' \
