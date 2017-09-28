@@ -24,7 +24,10 @@ if [ ! "${GIT_AUTHOR_DATE}" ] ; then
     echo >&2 "Unable to determine commit date for merge"
     exit 1
 fi
-git merge --no-edit "${v}-raw"
+if [ "${v}" = "v2.6.12-rc2-dts" ] ; then
+    auh="--allow-unrelated-histories"
+fi
+git merge $auh --no-edit "${v}-raw"
 git clean -fdqx
 # Use the date of Linus' original tag for the tag.
 case "${v%-dts}" in
