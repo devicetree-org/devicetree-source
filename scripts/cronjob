@@ -109,7 +109,7 @@ echo "Recording refs/tests/${DATE}"
 git update-ref refs/tests/${DATE} ${TESTBRANCH}
 
 echo "Removing ${TESTBRANCH}"
-git branch -D ${TESTBRANCH}"
+git branch -D "${TESTBRANCH}"
 
 echo "Final State:"
 for branch in ${BRANCHES} ; do
