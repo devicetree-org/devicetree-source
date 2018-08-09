@@ -1,11 +1,11 @@
-* Qualcomm Technologies APQ8096 ASoC sound card driver
+* Qualcomm Technologies Inc. SDM845 ASoC sound card driver
 
-This binding describes the APQ8096 sound card, which uses qdsp for audio.
+This binding describes the SDM845 sound card, which uses qdsp for audio.
 
 - compatible:
 	Usage: required
 	Value type: <stringlist>
-	Definition: must be "qcom,apq8096-sndcard"
+	Definition: must be "qcom,sdm845-sndcard"
 
 - audio-routing:
 	Usage: Optional
@@ -14,41 +14,7 @@ This binding describes the APQ8096 sound card, which uses qdsp for audio.
 		  Each entry is a pair of strings, the first being the
 		  connection's sink, the second being the connection's
 		  source. Valid names could be power supplies, MicBias
-		  of codec and the jacks on the board:
-		  Valid names include:
-
-		Board Connectors:
-			"Headphone Left"
-			"Headphone Right"
-			"Earphone"
-			"Line Out1"
-			"Line Out2"
-			"Line Out3"
-			"Line Out4"
-			"Analog Mic1"
-			"Analog Mic2"
-			"Analog Mic3"
-			"Analog Mic4"
-			"Analog Mic5"
-			"Analog Mic6"
-			"Digital Mic2"
-			"Digital Mic3"
-
-		Audio pins and MicBias on WCD9335 Codec:
-			"MIC_BIAS1"
-			"MIC_BIAS2"
-			"MIC_BIAS3"
-			"MIC_BIAS4"
-			"AMIC1"
-			"AMIC2"
-			"AMIC3"
-			"AMIC4"
-			"AMIC5"
-			"AMIC6"
-			"AMIC6"
-			"DMIC1"
-			"DMIC2"
-			"DMIC3"
+		  of codec and the jacks on the board.
 
 - model:
 	Usage: required
@@ -71,7 +37,7 @@ dailinks would be cpu/codec/platform dais.
 	Definition: cpu dai sub-node
 
 - codec:
-	Usage: Optional
+	Usage: required
 	Value type: <subnode>
 	Definition: codec dai sub-node
 
@@ -82,19 +48,17 @@ dailinks would be cpu/codec/platform dais.
 
 - sound-dai:
 	Usage: required
-	Value type: <phandle with arguments>
+	Value type: <phandle>
 	Definition: dai phandle/s and port of CPU/CODEC/PLATFORM node.
-
-Obsolete:
-	qcom,model: String for soundcard name (Use model instead)
-	qcom,audio-routing: A list of the connections between audio components.
-			    (Use audio-routing instead)
 
 Example:
 
 audio {
-	compatible = "qcom,apq8096-sndcard";
-	model = "DB820c";
+	compatible = "qcom,sdm845-sndcard";
+	model = "sdm845-snd-card";
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&pri_mi2s_active &pri_mi2s_ws_active>;
+	pinctrl-1 = <&pri_mi2s_sleep &pri_mi2s_ws_sleep>;
 
 	mm1-dai-link {
 		link-name = "MultiMedia1";
@@ -103,18 +67,14 @@ audio {
 		};
 	};
 
-	hdmi-dai-link {
-		link-name = "HDMI Playback";
+	pri-mi2s-dai-link {
+		link-name = "PRI MI2S Playback";
 		cpu {
-			sound-dai = <&q6afe HDMI_RX>;
+			sound-dai = <&q6afedai PRIMARY_MI2S_RX>;
 		};
 
 		platform {
-			sound-dai = <&q6adm>;
-		};
-
-		codec {
-			sound-dai = <&hdmi 0>;
+			sound-dai = <&q6routing>;
 		};
 	};
 };
